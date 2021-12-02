@@ -1,0 +1,42 @@
+{
+  "name": "remallow",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "webpack --mode=development",
+    "start": "webpack serve --mode=development --host 127.0.0.1 --port 3663",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "./lib/exe.js",
+  "bin": {
+    "remallow": "./server/bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yokesharun/remallow.git"
+  },
+  "author": "Arun Yokesh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yokesharun/remallow/issues"
+  },
+  "homepage": "https://github.com/yokesharun/remallow#readme",
+  "dependencies": {
+    "chrome-launcher": "^0.15.0",
+    "colors": "^1.4.0",
+    "get-installed-path": "^4.0.8",
+    "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
+    "babel-loader": "^8.2.3",
+    "html-webpack-plugin": "^5.5.0",
+    "webpack": "^5.64.4",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0"
+  }
+}
