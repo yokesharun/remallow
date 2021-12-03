@@ -1,84 +1,18 @@
 #!/usr/bin/env node
 
 const colors = require('colors');
-const greet = require("../lib/exe");
-
-// get arguments after first two elements in process.argv
-var arguments = process.argv.splice(2);
+const { exec } = require("child_process");
 
 const currentFolder = process.cwd();
 
-// check if user want language specific greeting
-// default value of language is `null`
-var lang = null;
+// const ChromeLauncher = require('chrome-launcher');
 
-// check if first argument is `--lang`
-if (arguments[0] == '--lang') {
-    // set second argument as language.
-    lang = arguments[1];
-}
-
-
-// if `lang` is empty, then show random greeting
-if (lang) {
-    // print random greeting
-    console.log(
-        // wraps text with rainbow color formatting
-        colors.rainbow(
-            // returns the greeting text with specified language
-            greet.greet(lang)
-        )
-    );
-}
-else {
-    // print random greeting
-    console.log(process.cwd())
-
-    const { exec } = require('child_process');
-    const ChromeLauncher = require('chrome-launcher');
-
-    const { getInstalledPath } = require('get-installed-path')
-    getInstalledPath('remallow').then((path) => {
-        console.log(path)
-        // exec('cd '+path+' && npm run start', (err, stdout, stderr) => {
-        //     if (err) {
-        //         //some err occurred
-        //         console.error(err)
-        //     } else {
-        //         // the *entire* stdout and stderr (buffered)
-        //         console.log(`stdout: ${stdout}`);
-        //         console.log(`stderr: ${stderr}`);
-        //     }
-        // });
-        // exec('cd '+path+' && node server/bin/server.js', (err, stdout, stderr) => {
-        //     if (err) {
-        //         //some err occurred
-        //         console.error(err)
-        //     } else {
-        //         // the *entire* stdout and stderr (buffered)
-        //         console.log(`stdout: ${stdout}`);
-        //         console.log(`stderr: ${stderr}`);
-        //     }
-        // });
-    })
-
-    ChromeLauncher.launch({
-        startingUrl: 'http://127.0.0.1:4000',
-        chromeFlags: [`--app=http://127.0.0.1:4000`]
-    }).then(chrome => {
-        console.log(`Remallow Package Manager running on http://127.0.0.1:4000`);
-    });
-
-    console.log(
-        // wraps text with rainbow color formatting
-        colors.rainbow(
-            // returns the random greeting text
-            greet.greetRandom()
-        )
-    );
-}
-
-console.log(currentFolder)
+// ChromeLauncher.launch({
+//     startingUrl: 'http://127.0.0.1:4000',
+//     chromeFlags: [`--app=http://127.0.0.1:4000`]
+// }).then(chrome => {
+//     console.log(`Remallow Package Manager running on http://127.0.0.1:4000`);
+// });
 
 const getPackage = (res) => {
     var fs = require('fs'),
@@ -89,16 +23,13 @@ const getPackage = (res) => {
             console.log("File read failed:", err);
             return;
         }
-        console.log("File data:", jsonString);
-        res.send(jsonString);
+        res.send(JSON.stringify(jsonString));
     });
 }
 
 
-
 var express = require('express');
 var app = express();
-var utils = require('./index');
 
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
@@ -123,6 +54,25 @@ app.use(function (req, res, next) {
 app.get('/package', function (req, res) {
     getPackage(res)
 })
+
+app.get('/package/:packageName', function(req, res) {
+    console.log("tagId is set to " + req.params.packageName);
+
+    exec(`npm install ${req.params.packageName}`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+        res.send({
+            result: 'ok'
+        });
+    });
+});
 
 var server = app.listen(8081, function () {
    var host = 'http://127.0.0.1/'
