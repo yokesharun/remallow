@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const colors = require('colors');
-const { exec } = require("child_process");
+const { exec, execSync } = require("child_process");
 
 const currentFolder = process.cwd();
 
@@ -23,7 +23,13 @@ const getPackage = (res) => {
             console.log("File read failed:", err);
             return;
         }
-        res.send(JSON.stringify(jsonString));
+        const stdout = execSync(`npm list --json=true`).toString();
+        res.send(
+            {
+                raw: JSON.parse(jsonString),
+                json: JSON.parse(stdout)
+            }
+        );
     });
 }
 
@@ -35,7 +41,7 @@ var app = express();
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:3663');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3663');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -57,8 +63,37 @@ app.get('/package', function (req, res) {
 
 app.get('/package/:packageName', function(req, res) {
     console.log("tagId is set to " + req.params.packageName);
+    console.log(colors.brightMagenta("Installing... " + req.params.packageName));
+    console.log(colors.brightMagenta("Installing... " + req.params.packageName));
+    console.log(colors.brightMagenta("Installing... " + req.params.packageName));
+    console.log(colors.brightMagenta("Installing... " + req.params.packageName));
+    console.log(colors.brightMagenta("Installing... " + req.params.packageName));
 
     exec(`npm install ${req.params.packageName}`, (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+        res.send({
+            result: 'ok'
+        });
+    });
+});
+
+app.get('/package/remove/:packageName', function(req, res) {
+    console.log("Removing " + req.params.packageName);
+    console.log(colors.brightMagenta("Removing... " + req.params.packageName));
+    console.log(colors.brightMagenta("Removing... " + req.params.packageName));
+    console.log(colors.brightMagenta("Removing... " + req.params.packageName));
+    console.log(colors.brightMagenta("Removing... " + req.params.packageName));
+    console.log(colors.brightMagenta("Removing... " + req.params.packageName));
+
+    exec(`npm uninstall ${req.params.packageName}`, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return;
