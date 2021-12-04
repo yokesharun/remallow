@@ -1,8 +1,15 @@
 import React from 'react';
-import PackageList from '../components/PackageList';
+import Navigation from '../components/Navigation';
+import List from '../components/List';
+import './style.css';
 
 const Layout  = () => {
-    return <PackageList />
+    return (
+        <div className="container is-max-widescreen">
+            <Navigation />
+            <List />
+        </div>
+    )
 }
 
 export default Layout;

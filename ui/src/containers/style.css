@@ -1,0 +1,23 @@
+.container {
+    margin: 2% auto;
+}
+
+.item-wrapper{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.search-container{
+    max-width: 500px;
+}
+
+.delete-btn{
+    margin-top: 10%;
+    float: right;
+}
+
+.list-items{
+    margin-top: 2%;
+}
+

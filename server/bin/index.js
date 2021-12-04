@@ -62,11 +62,6 @@ app.get('/package', function (req, res) {
 })
 
 app.get('/package/:packageName', function(req, res) {
-    console.log("tagId is set to " + req.params.packageName);
-    console.log(colors.brightMagenta("Installing... " + req.params.packageName));
-    console.log(colors.brightMagenta("Installing... " + req.params.packageName));
-    console.log(colors.brightMagenta("Installing... " + req.params.packageName));
-    console.log(colors.brightMagenta("Installing... " + req.params.packageName));
     console.log(colors.brightMagenta("Installing... " + req.params.packageName));
 
     exec(`npm install ${req.params.packageName}`, (error, stdout, stderr) => {
@@ -86,11 +81,6 @@ app.get('/package/:packageName', function(req, res) {
 });
 
 app.get('/package/remove/:packageName', function(req, res) {
-    console.log("Removing " + req.params.packageName);
-    console.log(colors.brightMagenta("Removing... " + req.params.packageName));
-    console.log(colors.brightMagenta("Removing... " + req.params.packageName));
-    console.log(colors.brightMagenta("Removing... " + req.params.packageName));
-    console.log(colors.brightMagenta("Removing... " + req.params.packageName));
     console.log(colors.brightMagenta("Removing... " + req.params.packageName));
 
     exec(`npm uninstall ${req.params.packageName}`, (error, stdout, stderr) => {
@@ -109,11 +99,8 @@ app.get('/package/remove/:packageName', function(req, res) {
     });
 });
 
-var server = app.listen(8081, function () {
-   var host = 'http://127.0.0.1/'
+app.listen(8081, function () {
+   var host = 'http://127.0.0.1'
    var port = '8081';
-   console.log("Example app listening at http://%s:%s", host, port)
+   console.log("Example app listening at %s:%s", host, port)
 })
-
-
-module.exports = { getPackage, currentFolder }

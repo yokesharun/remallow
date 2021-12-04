@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ReactJson from 'react-json-view';
 
-const PackageList  = () => {
+const List = () => {
 
     const [packages, setPackages] = useState({});
     const [isLoaded, setIsLoaded] = useState(false);
@@ -84,25 +84,52 @@ const PackageList  = () => {
 
     const listOfPackages = Object.keys(newObj.dependencies);
 
-    console.log(JSON.stringify(packages.json));
-    // console.log(obj.dependencies)
-    console.log(newObj.dependencies['@babel/core'])
-    console.log(Object.keys(newObj.dependencies))
-    if(isLoaded){
-        return (
-        <>
-            <div>
-                <h1>Remallow Package Manager</h1>
-                {listOfPackages.map((i) => <div>{i} <button onClick={() => RemovePackage(i)}>Remove</button></div>)}
-                <button onClick={() => getPackage()}>Update</button>
-                <input type="text" onChange={(e) => setPackageName(e.target.value)} value={packageName}/>
-                <button onClick={() => installPackage()}>Install</button>
-                <ReactJson src={packages.raw} displayDataTypes={false} enableClipboard={false} />
+    const renderPackages = (listOfPackages) => {
+        return listOfPackages.map((item) => 
+            <div class="column is-one-third">
+                <div className="tile is-child box item-wrapper">
+                    <div>
+                        <p className="title is-size-6">{item}</p> 
+                        <div className="control">
+                            <div className="tags has-addons">
+                            <span className="tag is-primary">version</span>
+                            <span className="tag is-light">0.9.3</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="half">
+                        <button className="button is-danger is-outlined is-small" onClick={() => RemovePackage(item)} title="Uninstall">
+                            <span className="icon is-small">
+                                <i className="fas fa-trash-alt"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
             </div>
-        </>
+        )
+    }
+
+    return (
+        <div>
+            <section className="section is-small">
+                <h1 className="title is-size-4">NPM Package Manager</h1>
+                <h6 className="subtitle is-size-7">
+                    A simple tool to manager your <strong>package.json</strong> file.
+                </h6>
+                <input className="input is-primary" type="text" placeholder="Search your packages here" onChange={(e) => setPackageName(e.target.value)} value={packageName} />
+                <button class="button is-primary list-items" onClick={() => installPackage()}>Install Package</button>
+            </section>
+            <section className="section">
+                <h1 className="title is-size-5">Installed Packages ()</h1>
+                <h6 className="subtitle is-size-7">
+                    Packages listed here are fetched from your Package.json file.
+                </h6>
+                <div class="columns is-multiline is-mobile list-items">
+                {isLoaded && renderPackages(listOfPackages)}
+                </div>
+            </section>
+        </div>
     );
 }
- return null;
-}
 
-export default PackageList;
+export default List;
