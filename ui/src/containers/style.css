@@ -1,23 +1,35 @@
 .container {
-    margin: 2% auto;
+  margin: 2% auto;
 }
 
-.item-wrapper{
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
+.item-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
-.search-container{
-    max-width: 500px;
+.search-container {
+  max-width: 500px;
 }
 
-.delete-btn{
-    margin-top: 10%;
-    float: right;
+.delete-btn {
+  margin-top: 10%;
+  float: right;
 }
 
-.list-items{
-    margin-top: 2%;
+.list-items {
+  margin-top: 2%;
 }
 
+.select-field {
+  margin-right: 1%;
+}
+
+.loader-sync {
+  margin-right: 5%;
+}
+
+.github-links {
+  display: flex;
+  justify-content: space-evenly;
+}
