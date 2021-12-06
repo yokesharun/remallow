@@ -88,3 +88,28 @@ export const uninstallPackage = ({
       setLastActivity(`Uninstalled ${item} package`);
     });
 };
+
+export const searchPackage = ({
+  packageName,
+  setLastActivity,
+  setSearchResult,
+  setIsSearchLoading
+}) => {
+  setIsSearchLoading(true);
+  axios
+    .get("http://127.0.0.1:8081/package/search/" + packageName)
+    .then(function (response) {
+      console.log(response.data)
+      setSearchResult(response.data.json);
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+      setLastActivity(error.message);
+    })
+    .then(function () {
+      // always executed
+      setLastActivity(`searched for ${packageName}`);
+      setIsSearchLoading(false);
+    });
+};

@@ -2,6 +2,7 @@
 
 const colors = require("colors");
 const { exec, execSync } = require("child_process");
+const {cleanup} = require('../utils/helper')
 
 const currentFolder = process.cwd();
 
@@ -65,31 +66,40 @@ app.get("/packages", function (req, res) {
 });
 
 app.get("/package/install/:packageName", function (req, res) {
-  console.log(colors.brightMagenta("Installing... " + req.params.packageName));
-  const {manager, dependency} = req.query
+  const {
+    params: { packageName },
+    query: { manager, dependency },
+  } = req;
 
-  exec(`${manager} install ${req.params.packageName} ${dependency}`, (error, stdout, stderr) => {
-    if (error) {
-      console.log(`error: ${error.message}`);
-      res.status(500).send({
-        success: false,
-        message: `error: ${error.message}`
+  const resultKeyword = cleanup(packageName);
+
+  console.log(colors.brightMagenta("Installing... " + resultKeyword));
+
+  exec(
+    `${manager} install ${req.params.packageName} ${dependency}`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        res.status(500).send({
+          success: false,
+          message: `error: ${error.message}`,
+        });
+        return;
+      }
+      if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        res.status(500).send({
+          success: false,
+          message: `stderr: ${stderr}`,
+        });
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      res.status(200).send({
+        success: true,
       });
-      return;
     }
-    if (stderr) {
-      console.log(`stderr: ${stderr}`);
-      res.status(500).send({
-        success: false,
-        message: `stderr: ${stderr}`
-      });
-      return;
-    }
-    console.log(`stdout: ${stdout}`);
-    res.status(200).send({
-      success: true,
-    });
-  });
+  );
 });
 
 app.get("/package/uninstall/:packageName", function (req, res) {
@@ -100,7 +110,7 @@ app.get("/package/uninstall/:packageName", function (req, res) {
       console.log(`error: ${error.message}`);
       res.status(500).send({
         success: false,
-        message: `error: ${error.message}`
+        message: `error: ${error.message}`,
       });
       return;
     }
@@ -108,13 +118,48 @@ app.get("/package/uninstall/:packageName", function (req, res) {
       console.log(`stderr: ${stderr}`);
       res.status(500).send({
         success: false,
-        message: `stderr: ${stderr}`
+        message: `stderr: ${stderr}`,
       });
       return;
     }
     console.log(`stdout: ${stdout}`);
     res.status(200).send({
       success: true,
+    });
+  });
+});
+
+app.get("/package/search/:keyword", function (req, res) {
+  const {
+    params: { keyword },
+  } = req;
+  // let removeElements = ["npm","yarn", "--save", "--save-dev", " install ", " add "];
+  const resultKeyword = cleanup(keyword);
+
+  console.log(colors.brightMagenta("Searching... " + resultKeyword));
+
+  exec(`npm search ${resultKeyword} --json`, (error, stdout, stderr) => {
+    if (error) {
+      console.log(`error: ${error.message}`);
+      res.status(500).send({
+        success: false,
+        message: `error: ${error.message}`,
+      });
+      return;
+    }
+    if (stderr) {
+      console.log(`stderr: ${stderr}`);
+      res.status(500).send({
+        success: false,
+        message: `stderr: ${stderr}`,
+      });
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    res.status(200).send({
+      success: true,
+      json: JSON.parse(stdout),
+      keyword: resultKeyword,
     });
   });
 });

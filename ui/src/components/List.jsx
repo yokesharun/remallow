@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getPackage, installPackage, uninstallPackage } from "../utils/api";
+import {
+  getPackage,
+  installPackage,
+  uninstallPackage,
+  searchPackage,
+} from "../utils/api";
 import Packages from "./Packages";
+import { useDebounce } from "../utils/hooks";
+import _ from "lodash";
 
 const List = () => {
   const [packages, setPackages] = useState({});
@@ -9,6 +16,8 @@ const List = () => {
   const [manager, setManager] = useState("npm");
   const [dependency, setDependency] = useState("--save");
   const [lastActivity, setLastActivity] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   useEffect(() => {
     getAllPackages();
@@ -20,6 +29,19 @@ const List = () => {
   const getAllPackages = () => {
     getPackage({ setIsLoading, setPackages });
   };
+
+  const debouncedSearchTerm = useDebounce(packageName, 500);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      searchPackage({
+        packageName,
+        setLastActivity,
+        setSearchResult,
+        setIsSearchLoading,
+      });
+    }
+  }, [debouncedSearchTerm]);
 
   const install = () => {
     if (packageName !== "") {
@@ -81,6 +103,13 @@ const List = () => {
   const { currentFolder = "", json: { name: projectName = "" } = {} } =
     packages;
 
+  const getSearchResults = () => {
+    console.log(searchResult);
+    return searchResult
+      .slice(0, 8)
+      .map((i) => <span class="tag is-light loader-block">{i.name}</span>);
+  };
+
   return (
     <div>
       <section className="section is-small">
@@ -101,6 +130,12 @@ const List = () => {
           A simple tool to manager your <strong>package.json</strong> file.
         </h6>
         <div className="field">
+          <div className="search-results">
+            {isSearchLoading && <i className="fas fa-spinner fa-pulse search-loader"></i>}
+            {!_.isEmpty(searchResult) && (
+              <>Search Results: {getSearchResults()}</>
+            )}
+          </div>
           <input
             className="input is-link"
             type="text"
@@ -120,9 +155,7 @@ const List = () => {
             onChange={(e) => setDependency(e.target.value)}
             value="--save"
           >
-            <option value="--save">
-              dependencies
-            </option>
+            <option value="--save">dependencies</option>
             <option value="--save-dev">devDependencies</option>
           </select>
         </div>
