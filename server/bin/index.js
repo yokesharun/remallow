@@ -2,7 +2,7 @@
 
 const colors = require("colors");
 const { exec, execSync } = require("child_process");
-const {cleanup} = require('../utils/helper')
+const { cleanup } = require("../utils/helper");
 
 const currentFolder = process.cwd();
 
@@ -21,7 +21,7 @@ const getPackage = (res) => {
     filePath = path.join(currentFolder, "package.json");
   fs.readFile(filePath, "utf8", (err, jsonString) => {
     if (err) {
-      console.log("File read failed:", err);
+      console.log("File read failed:".red, err);
       return;
     }
     const stdout = execSync(`npm list --json=true`).toString();
@@ -65,21 +65,21 @@ app.get("/packages", function (req, res) {
   getPackage(res);
 });
 
-app.get("/package/install/:packageName", function (req, res) {
+app.get("/package/install", function (req, res) {
   const {
-    params: { packageName },
-    query: { manager, dependency },
+    query: { manager, dependency, packageName },
   } = req;
 
   const resultKeyword = cleanup(packageName);
 
-  console.log(colors.brightMagenta("Installing... " + resultKeyword));
+  console.log("Installing... ".green + resultKeyword);
+  console.log(`${manager} install ${packageName} ${dependency}`.green);
 
   exec(
-    `${manager} install ${req.params.packageName} ${dependency}`,
+    `${manager} install ${packageName} ${dependency}`,
     (error, stdout, stderr) => {
       if (error) {
-        console.log(`error: ${error.message}`);
+        console.log(`error: ${error.message}`.red);
         res.status(500).send({
           success: false,
           message: `error: ${error.message}`,
@@ -87,7 +87,7 @@ app.get("/package/install/:packageName", function (req, res) {
         return;
       }
       if (stderr) {
-        console.log(`stderr: ${stderr}`);
+        console.log(`stderr: ${stderr}`.red);
         res.status(500).send({
           success: false,
           message: `stderr: ${stderr}`,
@@ -102,12 +102,12 @@ app.get("/package/install/:packageName", function (req, res) {
   );
 });
 
-app.get("/package/uninstall/:packageName", function (req, res) {
-  console.log(colors.brightMagenta("Removing... " + req.params.packageName));
+app.get("/package/uninstall", function (req, res) {
+  console.log("Removing... ".green + req.query.packageName);
 
-  exec(`npm uninstall ${req.params.packageName}`, (error, stdout, stderr) => {
+  exec(`npm uninstall ${req.query.packageName}`, (error, stdout, stderr) => {
     if (error) {
-      console.log(`error: ${error.message}`);
+      console.log(`error: ${error.message}`.red);
       res.status(500).send({
         success: false,
         message: `error: ${error.message}`,
@@ -115,7 +115,7 @@ app.get("/package/uninstall/:packageName", function (req, res) {
       return;
     }
     if (stderr) {
-      console.log(`stderr: ${stderr}`);
+      console.log(`stderr: ${stderr}`.red);
       res.status(500).send({
         success: false,
         message: `stderr: ${stderr}`,
@@ -129,18 +129,18 @@ app.get("/package/uninstall/:packageName", function (req, res) {
   });
 });
 
-app.get("/package/search/:keyword", function (req, res) {
+app.get("/package/search", function (req, res) {
   const {
-    params: { keyword },
+    query: { keyword },
   } = req;
   // let removeElements = ["npm","yarn", "--save", "--save-dev", " install ", " add "];
   const resultKeyword = cleanup(keyword);
 
-  console.log(colors.brightMagenta("Searching... " + resultKeyword));
+  console.log("Searching... ".green + resultKeyword);
 
   exec(`npm search ${resultKeyword} --json`, (error, stdout, stderr) => {
     if (error) {
-      console.log(`error: ${error.message}`);
+      console.log(`error: ${error.message}`.red);
       res.status(500).send({
         success: false,
         message: `error: ${error.message}`,
@@ -148,7 +148,7 @@ app.get("/package/search/:keyword", function (req, res) {
       return;
     }
     if (stderr) {
-      console.log(`stderr: ${stderr}`);
+      console.log(`stderr: ${stderr}`.red);
       res.status(500).send({
         success: false,
         message: `stderr: ${stderr}`,
@@ -167,5 +167,5 @@ app.get("/package/search/:keyword", function (req, res) {
 app.listen(8081, function () {
   var host = "http://127.0.0.1";
   var port = "8081";
-  console.log("Example app listening at %s:%s", host, port);
+  console.log("Remallow app listening at %s:%s".magenta, host, port);
 });

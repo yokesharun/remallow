@@ -53,13 +53,13 @@ const List = () => {
         params: {
           manager,
           dependency,
+          packageName,
         },
         packageName,
         setIsLoading,
         setLastActivity,
         setPackageName,
         setLastActivity,
-        setPackageName,
         getAllPackages,
       });
     }
@@ -87,6 +87,11 @@ const List = () => {
     }
   };
 
+  const updateSearch = (i) => {
+    console.log(i);
+    setPackageName(i.name);
+  };
+
   const obj = {
     ...packages.json,
   };
@@ -105,9 +110,14 @@ const List = () => {
 
   const getSearchResults = () => {
     console.log(searchResult);
-    return searchResult
-      .slice(0, 8)
-      .map((i) => <span class="tag is-light loader-block">{i.name}</span>);
+    return searchResult.slice(0, 8).map((i) => (
+      <span
+        onClick={(e) => updateSearch(i)}
+        class="tag is-light loader-block search-item"
+      >
+        {i.name}
+      </span>
+    ));
   };
 
   return (
@@ -131,7 +141,9 @@ const List = () => {
         </h6>
         <div className="field">
           <div className="search-results">
-            {isSearchLoading && <i className="fas fa-spinner fa-pulse search-loader"></i>}
+            {isSearchLoading && (
+              <i className="fas fa-spinner fa-pulse search-loader"></i>
+            )}
             {!_.isEmpty(searchResult) && (
               <>Search Results: {getSearchResults()}</>
             )}
@@ -139,7 +151,7 @@ const List = () => {
           <input
             className="input is-link"
             type="text"
-            placeholder="Search your packages here"
+            placeholder="Search or paste the package to install"
             onChange={(e) => setPackageName(e.target.value)}
             value={packageName}
           />

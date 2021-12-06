@@ -31,7 +31,7 @@ export const installPackage = ({
 }) => {
   setIsLoading(true);
   axios
-    .get("http://127.0.0.1:8081/package/install/" + packageName, {
+    .get("http://127.0.0.1:8081/package/install", {
       params,
     })
     .then(function (response) {
@@ -43,7 +43,7 @@ export const installPackage = ({
     .catch(function (error) {
       // handle error
       console.log(error);
-      setLastActivity(error.message);      
+      setLastActivity(error.message);
     })
     .then(function () {
       // always executed
@@ -60,7 +60,11 @@ export const uninstallPackage = ({
   setLastActivity,
 }) => {
   axios
-    .get("http://127.0.0.1:8081/package/uninstall/" + item)
+    .get("http://127.0.0.1:8081/package/uninstall", {
+      params: {
+        packageName: item,
+      },
+    })
     .then(function (response) {
       if (response.data.success) {
         getAllPackages();
@@ -71,7 +75,7 @@ export const uninstallPackage = ({
       // handle error
       console.log(error);
       setLastActivity(error.message);
-        })
+    })
     .then(function () {
       // always executed
       if (event.target.tagName === "BUTTON") {
@@ -93,13 +97,17 @@ export const searchPackage = ({
   packageName,
   setLastActivity,
   setSearchResult,
-  setIsSearchLoading
+  setIsSearchLoading,
 }) => {
   setIsSearchLoading(true);
   axios
-    .get("http://127.0.0.1:8081/package/search/" + packageName)
+    .get("http://127.0.0.1:8081/package/search", {
+      params: {
+        keyword: packageName,
+      },
+    })
     .then(function (response) {
-      console.log(response.data)
+      console.log(response.data);
       setSearchResult(response.data.json);
     })
     .catch(function (error) {

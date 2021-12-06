@@ -46,10 +46,14 @@
   margin-left: 1%;
 }
 
-.search-results{
+.search-results {
   padding-bottom: 2%;
 }
 
-.search-loader{
+.search-loader {
   margin-right: 2%;
+}
+
+.search-item {
+  cursor: pointer;
 }
