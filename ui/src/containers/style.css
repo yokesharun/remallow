@@ -33,3 +33,11 @@
   display: flex;
   justify-content: space-evenly;
 }
+
+.nav-bar{
+  padding: 1%;
+}
+
+.nav-title{
+  color: #ffffff;
+}

@@ -1,17 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useev } from "react";
 import axios from "axios";
 import ReactJson from "react-json-view";
 
 const List = () => {
   const [packages, setPackages] = useState({});
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [packageName, setPackageName] = useState("");
+  const [manager, setManager] = useState("npm");
+  const [dependency, setDependency] = useState("--save");
 
   useEffect(() => {
     getPackage();
+    document.getElementById("packages").addEventListener('click', clickEventListener, true)
   }, []);
 
+  const clickEventListener = (event) => {
+    let item;
+
+    if(event.target.tagName === 'BUTTON'){
+      item = event.target.getAttribute("data-item");
+      event.target.className += ' is-loading';
+    }else{
+      const element = event.target.closest("button");
+      element.className += ' is-loading';
+      item = element.getAttribute("data-item");
+    }
+    RemovePackage(item, event);
+  }
+
   const getPackage = () => {
+    setIsLoading(true);
     axios
       .get("http://127.0.0.1:8081/package", {
         mode: "no-cors",
@@ -19,7 +37,6 @@ const List = () => {
       .then(function (response) {
         // handle success
         setPackages(response.data);
-        setIsLoaded(true);
       })
       .catch(function (error) {
         // handle error
@@ -27,15 +44,22 @@ const List = () => {
       })
       .then(function () {
         // always executed
+        setIsLoading(false);
       });
   };
 
   const installPackage = () => {
     if (packageName !== "") {
+      setIsLoading(true);
       axios
-        .get("http://127.0.0.1:8081/package/" + packageName)
+        .get("http://127.0.0.1:8081/package/" + packageName, {
+          params: {
+            manager,
+            dependency
+          }
+        })
         .then(function (response) {
-          if (response.data.result === "ok") {
+          if (response.data.success) {
             getPackage();
           }
           setPackageName("");
@@ -46,19 +70,17 @@ const List = () => {
         })
         .then(function () {
           // always executed
+          setIsLoading(false);
         });
     }
   };
 
-  const RemovePackage = (i) => {
-    if (i !== "") {
+  const RemovePackage = (item, event) => {
+    if (item !== "") {
       axios
-        .get("http://127.0.0.1:8081/package/remove/" + i)
+        .get("http://127.0.0.1:8081/package/remove/" + item)
         .then(function (response) {
-          // handle success
-          // setPackages(JSON.parse(response.data));
-          // setIsLoaded(true);
-          if (response.data.result === "ok") {
+          if (response.data.success) {
             getPackage();
           }
           setPackageName("");
@@ -69,6 +91,14 @@ const List = () => {
         })
         .then(function () {
           // always executed
+          if(event.target.tagName === 'BUTTON'){
+            event.target.className = event.target.className.replace('is-loading','');
+            event.target.blur();
+          }else{
+            const element = event.target.closest("button");
+            element.className = element.className.replace('is-loading','');
+            element.blur();
+          }
         });
     }
   };
@@ -105,7 +135,7 @@ const List = () => {
           <div className="half">
             <button
               className="button is-danger is-outlined is-small"
-              onClick={() => RemovePackage(item)}
+              data-item={item}
               title="Uninstall"
             >
               <span className="icon is-small">
@@ -140,32 +170,23 @@ const List = () => {
             value={packageName}
           />
         </div>
-        <div class="select is-link is-small field select-field">
-          <select>
-            <option>- Package Manager -</option>
-            <option selected>npm</option>
-            <option>yarn</option>
+        {/* <div class="select is-link is-small field select-field">
+          <select onChange={(e) => setManager(e.target.value)}>
+            <option value='npm' selected>npm</option>
+            <option value='yarn'>yarn</option>
           </select>
-        </div>
+        </div> */}
         <div class="select is-link is-small field select-field">
-          <select>
-            <option>- Installation Type -</option>
-            <option selected>Locally</option>
-            <option>Globally</option>
-          </select>
-        </div>
-        <div class="select is-link is-small field select-field">
-          <select>
-            <option>- Select Dependency -</option>
-            <option selected>dependencies</option>
-            <option>devDependencies</option>
+          <select onChange={(e) => setDependency(e.target.value)}>
+            <option value='--save' selected>dependencies</option>
+            <option value='--save-dev'>devDependencies</option>
           </select>
         </div>
         <span>
-          Terminal cmd: <code>npm i PACKAGE_NAME </code>
+          Terminal cmd: <code>{`${manager} install ${packageName} ${dependency}`} </code>
         </span>
         <div class="field">
-          <button class="button is-link" onClick={() => installPackage()}>
+          <button class={`button is-link ${isLoading ? "is-loading" : ""}`} onClick={() => installPackage()}>
             Install Package
           </button>
         </div>
@@ -178,8 +199,8 @@ const List = () => {
           Packages listed here are fetched from your{" "}
           <strong>{currentFolder}/Package.json</strong> file.
         </h6>
-        <div class="columns is-multiline is-mobile list-items">
-          {isLoaded && renderPackages(listOfPackages)}
+        <div class="columns is-multiline is-mobile list-items" id="packages">
+          {renderPackages(listOfPackages)}
         </div>
       </section>
     </div>

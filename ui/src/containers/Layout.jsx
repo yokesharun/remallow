@@ -5,10 +5,12 @@ import "./style.css";
 
 const Layout = () => {
   return (
-    <div className="container is-max-widescreen">
+    <>
       <Navigation />
-      <List />
-    </div>
+      <div className="container is-max-widescreen">
+        <List />
+      </div>
+    </>
   );
 };
 

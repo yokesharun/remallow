@@ -66,19 +66,28 @@ app.get("/package", function (req, res) {
 
 app.get("/package/:packageName", function (req, res) {
   console.log(colors.brightMagenta("Installing... " + req.params.packageName));
+  const {manager, dependency} = req.query
 
-  exec(`npm install ${req.params.packageName}`, (error, stdout, stderr) => {
+  exec(`${manager} install ${req.params.packageName} ${dependency}`, (error, stdout, stderr) => {
     if (error) {
       console.log(`error: ${error.message}`);
+      res.status(500).send({
+        success: false,
+        message: `error: ${error.message}`
+      });
       return;
     }
     if (stderr) {
       console.log(`stderr: ${stderr}`);
+      res.status(500).send({
+        success: false,
+        message: `stderr: ${stderr}`
+      });
       return;
     }
     console.log(`stdout: ${stdout}`);
-    res.send({
-      result: "ok",
+    res.status(200).send({
+      success: true,
     });
   });
 });
@@ -89,15 +98,23 @@ app.get("/package/remove/:packageName", function (req, res) {
   exec(`npm uninstall ${req.params.packageName}`, (error, stdout, stderr) => {
     if (error) {
       console.log(`error: ${error.message}`);
+      res.status(500).send({
+        success: false,
+        message: `error: ${error.message}`
+      });
       return;
     }
     if (stderr) {
       console.log(`stderr: ${stderr}`);
+      res.status(500).send({
+        success: false,
+        message: `stderr: ${stderr}`
+      });
       return;
     }
     console.log(`stdout: ${stdout}`);
-    res.send({
-      result: "ok",
+    res.status(200).send({
+      success: true,
     });
   });
 });
