@@ -4,18 +4,22 @@ import GitHubButton from "react-github-btn";
 
 const Navigation = () => {
   return (
-    <nav class="navbar is-link nav-bar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="https://github.com/yokesharun/remallow">
+    <nav
+      className="navbar is-link nav-bar"
+      role="navigation"
+      aria-label="main navigation"
+    >
+      <div className="navbar-brand">
+        <a className="navbar-item" href="https://github.com/yokesharun/remallow">
           {/* <img src={logo} alt="" width="30" height="50" /> */}
           <h2 className="title nav-title">Remallow</h2>
         </a>
       </div>
 
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="field is-grouped">
-            <p class="control">
+      <div className="navbar-end">
+        <div className="navbar-item">
+          <div className="field is-grouped">
+            <p className="control">
               <GitHubButton
                 href="https://github.com/yokesharun"
                 data-size="large"
@@ -24,7 +28,7 @@ const Navigation = () => {
                 Follow @yokesharun
               </GitHubButton>
             </p>
-            <p class="control">
+            <p className="control">
               <GitHubButton
                 href="https://github.com/yokesharun/remallow"
                 data-size="large"
@@ -34,7 +38,7 @@ const Navigation = () => {
                 Star
               </GitHubButton>
             </p>
-            <p class="control">
+            <p className="control">
               <GitHubButton
                 href="https://github.com/yokesharun/remallow/issues"
                 data-size="large"
@@ -43,14 +47,14 @@ const Navigation = () => {
                 Report Issue
               </GitHubButton>
             </p>
-            {/* <p class="control">
+            {/* <p className="control">
               <a
-                class="bd-tw-button button is-danger is-light"
+                className="bd-tw-button button is-danger is-light"
                 target="_blank"
                 href="https://github.com/yokesharun/remallow"
               >
-                <span class="icon">
-                  <i class="fab fa-github"></i>
+                <span className="icon">
+                  <i className="fab fa-github"></i>
                 </span>
                 <span>Github</span>
               </a>

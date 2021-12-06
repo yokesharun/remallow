@@ -60,11 +60,11 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get("/package", function (req, res) {
+app.get("/packages", function (req, res) {
   getPackage(res);
 });
 
-app.get("/package/:packageName", function (req, res) {
+app.get("/package/install/:packageName", function (req, res) {
   console.log(colors.brightMagenta("Installing... " + req.params.packageName));
   const {manager, dependency} = req.query
 
@@ -92,7 +92,7 @@ app.get("/package/:packageName", function (req, res) {
   });
 });
 
-app.get("/package/remove/:packageName", function (req, res) {
+app.get("/package/uninstall/:packageName", function (req, res) {
   console.log(colors.brightMagenta("Removing... " + req.params.packageName));
 
   exec(`npm uninstall ${req.params.packageName}`, (error, stdout, stderr) => {

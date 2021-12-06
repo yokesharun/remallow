@@ -1,7 +1,7 @@
 {
   "name": "remallow",
   "version": "1.0.0",
-  "description": "",
+  "description": "GUI for NPM Package Managing!",
   "scripts": {
     "build": "webpack --mode=development",
     "ui": "webpack-dev-server --mode=development --host 127.0.0.1 --port 3663",
@@ -26,8 +26,7 @@
     "chrome-launcher": "^0.15.0",
     "colors": "^1.4.0",
     "lodash": "^4.17.21",
-    "react-github-btn": "^1.2.1",
-    "react-json-view": "^1.21.3"
+    "react-github-btn": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

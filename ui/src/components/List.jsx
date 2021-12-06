@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback, useev } from "react";
-import axios from "axios";
-import ReactJson from "react-json-view";
+import React, { useEffect, useState } from "react";
+import { getPackage, installPackage, uninstallPackage } from "../utils/api";
+import Packages from "./Packages";
 
 const List = () => {
   const [packages, setPackages] = useState({});
@@ -11,102 +11,57 @@ const List = () => {
   const [lastActivity, setLastActivity] = useState("");
 
   useEffect(() => {
-    getPackage();
-    document.getElementById("packages").addEventListener('click', clickEventListener, true)
+    getAllPackages();
+    document
+      .getElementById("packages")
+      .addEventListener("click", clickEventListener, true);
   }, []);
+
+  const getAllPackages = () => {
+    getPackage({ setIsLoading, setPackages });
+  };
+
+  const install = () => {
+    if (packageName !== "") {
+      if (listOfPackages.includes(packageName)) {
+        setLastActivity(`${packageName} is Already Installed!`);
+        return;
+      }
+      installPackage({
+        params: {
+          manager,
+          dependency,
+        },
+        packageName,
+        setIsLoading,
+        setLastActivity,
+        setPackageName,
+        setLastActivity,
+        setPackageName,
+        getAllPackages,
+      });
+    }
+  };
 
   const clickEventListener = (event) => {
     let item;
 
-    if(event.target.tagName === 'BUTTON'){
+    if (event.target.tagName === "BUTTON") {
       item = event.target.getAttribute("data-item");
-      event.target.className += ' is-loading';
-    }else{
+      event.target.className += " is-loading";
+    } else {
       const element = event.target.closest("button");
-      element.className += ' is-loading';
+      element.className += " is-loading";
       item = element.getAttribute("data-item");
     }
-    RemovePackage(item, event);
-  }
-
-  const getPackage = () => {
-    setIsLoading(true);
-    axios
-      .get("http://127.0.0.1:8081/package", {
-        mode: "no-cors",
-      })
-      .then(function (response) {
-        // handle success
-        setPackages(response.data);
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      })
-      .then(function () {
-        // always executed
-        setIsLoading(false);
+    if (item) {
+      uninstallPackage({
+        item,
+        event,
+        getAllPackages,
+        setPackageName,
+        setLastActivity,
       });
-  };
-
-  const installPackage = () => {
-    if (packageName !== "") {
-      if(listOfPackages.includes(packageName)){
-        setLastActivity(`${packageName} is Already Installed!`);
-        return;
-      }
-      setIsLoading(true);
-      axios
-        .get("http://127.0.0.1:8081/package/" + packageName, {
-          params: {
-            manager,
-            dependency
-          }
-        })
-        .then(function (response) {
-          if (response.data.success) {
-            getPackage();
-          }
-          setPackageName("");
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-          setLastActivity(`Installed ${packageName} package`);
-          setIsLoading(false);
-        });
-    }
-  };
-
-  const RemovePackage = (item, event) => {
-    if (item !== "") {
-      axios
-        .get("http://127.0.0.1:8081/package/remove/" + item)
-        .then(function (response) {
-          if (response.data.success) {
-            getPackage();
-          }
-          setPackageName("");
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-          if(event.target.tagName === 'BUTTON'){
-            event.target.className = event.target.className.replace('is-loading','');
-            event.target.blur();
-          }else{
-            const element = event.target.closest("button");
-            element.className = element.className.replace('is-loading','');
-            element.blur();
-          }
-          setLastActivity(`Uninstalled ${item} package`);
-        });
     }
   };
 
@@ -126,55 +81,26 @@ const List = () => {
   const { currentFolder = "", json: { name: projectName = "" } = {} } =
     packages;
 
-  const renderPackages = (listOfPackages) => {
-    return listOfPackages.map((item) => (
-      <div class="column is-one-third">
-        <div className="tile is-child box item-wrapper">
-          <div>
-            <p className="title is-size-6">{item}</p>
-            <div className="control">
-              <div className="tags has-addons">
-                <span className="tag is-link">version</span>
-                <span className="tag is-light">0.9.3</span>
-              </div>
-            </div>
-          </div>
-          <div className="half">
-            <button
-              className="button is-danger is-outlined is-small"
-              data-item={item}
-              title="Uninstall"
-            >
-              <span className="icon is-small">
-                <i className="fas fa-trash-alt"></i>
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-    ));
-  };
-
   return (
     <div>
       <section className="section is-small">
         <h1 className="title is-size-4">
-          NPM Package Manager{" "}
-          <span class="tag is-warning">
-            <i class="fas fa-sync fa-spin loader-icon"></i> Running:{" "}
+          React Package Manager{" "}
+          <span className="tag is-dark">
+            <i className="fas fa-sync fa-spin loader-icon"></i> Running:{" "}
             {projectName}
           </span>
-          {lastActivity &&
-            <span class="tag is-link loader-block">
-              <i class="fas fa-history loader-icon"></i>Last Activity:{" "}
+          {lastActivity && (
+            <span className="tag is-warning loader-block">
+              <i className="fas fa-history loader-icon"></i>Last Activity:{" "}
               {lastActivity}
             </span>
-          }
+          )}
         </h1>
         <h6 className="subtitle is-size-7">
           A simple tool to manager your <strong>package.json</strong> file.
         </h6>
-        <div class="field">
+        <div className="field">
           <input
             className="input is-link"
             type="text"
@@ -183,23 +109,32 @@ const List = () => {
             value={packageName}
           />
         </div>
-        {/* <div class="select is-link is-small field select-field">
+        {/* <div className="select is-link is-small field select-field" value="npm">
           <select onChange={(e) => setManager(e.target.value)}>
-            <option value='npm' selected>npm</option>
+            <option value='npm'>npm</option>
             <option value='yarn'>yarn</option>
           </select>
         </div> */}
-        <div class="select is-link is-small field select-field">
-          <select onChange={(e) => setDependency(e.target.value)}>
-            <option value='--save' selected>dependencies</option>
-            <option value='--save-dev'>devDependencies</option>
+        <div className="select is-link is-small field select-field">
+          <select
+            onChange={(e) => setDependency(e.target.value)}
+            value="--save"
+          >
+            <option value="--save">
+              dependencies
+            </option>
+            <option value="--save-dev">devDependencies</option>
           </select>
         </div>
         <span>
-          Terminal cmd: <code>{`${manager} install ${packageName} ${dependency}`} </code>
+          Terminal cmd:{" "}
+          <code>{`${manager} install ${packageName} ${dependency}`} </code>
         </span>
-        <div class="field">
-          <button class={`button is-link ${isLoading ? "is-loading" : ""}`} onClick={() => installPackage()}>
+        <div className="field">
+          <button
+            className={`button is-link ${isLoading ? "is-loading" : ""}`}
+            onClick={() => install()}
+          >
             Install Package
           </button>
         </div>
@@ -212,8 +147,11 @@ const List = () => {
           Packages listed here are fetched from your{" "}
           <strong>{currentFolder}/Package.json</strong> file.
         </h6>
-        <div class="columns is-multiline is-mobile list-items" id="packages">
-          {renderPackages(listOfPackages)}
+        <div
+          className="columns is-multiline is-mobile list-items"
+          id="packages"
+        >
+          <Packages listOfPackages={listOfPackages} />
         </div>
       </section>
     </div>
