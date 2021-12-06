@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "GUI for NPM Package Managing!",
   "scripts": {
-    "build": "webpack --mode=development",
-    "ui": "webpack-dev-server --mode=development --host 127.0.0.1 --port 3663",
+    "server-build": "webpack --mode=production --config ./webpack.server.config.js",
+    "ui-build": "webpack --mode=production --config ./webpack.ui.config.js",
+    "ui": "webpack-dev-server --mode=development --config ./webpack.ui.config.js",
+    "server": "nodemon ./server/bin/index.js localhost 8081",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "./lib/exe.js",
@@ -36,12 +38,15 @@
     "css-loader": "^6.5.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
+    "node-loader": "^2.0.0",
+    "nodemon": "^2.0.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "style-loader": "^3.3.1",
     "url-loader": "^4.1.1",
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.6.0"
+    "webpack-dev-server": "^4.6.0",
+    "webpack-node-externals": "^3.0.0"
   }
 }

@@ -3,9 +3,19 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: "/ui/index.js",
-  output: { path: path.resolve(__dirname, "dist") },
+  output: { path: path.resolve(__dirname, "dist/ui") },
+  devServer: {
+    static: path.resolve(__dirname, "../dist/ui"),
+    hot: true,
+    port: 3663,
+  },
   module: {
     rules: [
+      {
+        test: /\.(js|jsx|ts|tsx)$/,
+        exclude: /(node_modules)/,
+        loader: "babel-loader",
+      },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -24,7 +34,7 @@ module.exports = {
         test: /\.(png|jpg|gif|ico)$/i,
         use: [
           {
-            loader: 'url-loader',
+            loader: "url-loader",
             options: {
               limit: 8192,
             },
@@ -34,7 +44,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx'],
+    extensions: [".js", ".jsx"],
   },
   plugins: [
     new HtmlWebPackPlugin({

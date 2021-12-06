@@ -27,7 +27,7 @@ const List = () => {
   }, []);
 
   const getAllPackages = () => {
-    getPackage({ setIsLoading, setPackages });
+    getPackage({ setIsLoading, setPackages, setLastActivity });
   };
 
   const debouncedSearchTerm = useDebounce(packageName, 500);

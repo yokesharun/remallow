@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const getPackage = ({ setIsLoading, setPackages }) => {
+export const getPackage = ({ setIsLoading, setPackages, setLastActivity }) => {
   setIsLoading(true);
   axios
     .get("http://127.0.0.1:8081/packages", {
