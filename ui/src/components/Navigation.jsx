@@ -1,6 +1,6 @@
 import React from "react";
 import GitHubButton from "react-github-btn";
-import logo from '../../assets/dark-logo.png'
+// import logo from '../../assets/dark-logo.png'
 
 const Navigation = () => {
   return (

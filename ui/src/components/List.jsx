@@ -8,6 +8,7 @@ const List = () => {
   const [packageName, setPackageName] = useState("");
   const [manager, setManager] = useState("npm");
   const [dependency, setDependency] = useState("--save");
+  const [lastActivity, setLastActivity] = useState("");
 
   useEffect(() => {
     getPackage();
@@ -50,6 +51,10 @@ const List = () => {
 
   const installPackage = () => {
     if (packageName !== "") {
+      if(listOfPackages.includes(packageName)){
+        setLastActivity(`${packageName} is Already Installed!`);
+        return;
+      }
       setIsLoading(true);
       axios
         .get("http://127.0.0.1:8081/package/" + packageName, {
@@ -70,6 +75,7 @@ const List = () => {
         })
         .then(function () {
           // always executed
+          setLastActivity(`Installed ${packageName} package`);
           setIsLoading(false);
         });
     }
@@ -99,6 +105,7 @@ const List = () => {
             element.className = element.className.replace('is-loading','');
             element.blur();
           }
+          setLastActivity(`Uninstalled ${item} package`);
         });
     }
   };
@@ -154,9 +161,15 @@ const List = () => {
         <h1 className="title is-size-4">
           NPM Package Manager{" "}
           <span class="tag is-warning">
-            <i class="fas fa-sync fa-spin loader-sync"></i> Running:{" "}
+            <i class="fas fa-sync fa-spin loader-icon"></i> Running:{" "}
             {projectName}
           </span>
+          {lastActivity &&
+            <span class="tag is-link loader-block">
+              <i class="fas fa-history loader-icon"></i>Last Activity:{" "}
+              {lastActivity}
+            </span>
+          }
         </h1>
         <h6 className="subtitle is-size-7">
           A simple tool to manager your <strong>package.json</strong> file.
