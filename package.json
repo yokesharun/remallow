@@ -1,6 +1,6 @@
 {
   "name": "remallow",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "GUI for NPM Package Managing!",
   "scripts": {
     "server-build": "webpack --mode=production --config ./webpack.server.config.js",
@@ -25,12 +25,6 @@
   "license": "MIT",
   "homepage": "https://github.com/yokesharun/remallow#readme",
   "dependencies": {
-    "axios": "^0.24.0",
-    "chrome-launcher": "^0.15.0",
-    "colors": "^1.4.0",
-    "lodash": "^4.17.21",
-    "minimist": "^1.2.5",
-    "react-github-btn": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -49,7 +43,13 @@
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-node-externals": "^3.0.0",
+    "react-github-btn": "^1.2.1",
+    "chrome-launcher": "^0.15.0",
+    "axios": "^0.24.0",
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.5",
+    "colors": "^1.4.0"
   },
   "engines": {
     "node": ">=6.0.0"
