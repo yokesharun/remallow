@@ -1,4 +1,4 @@
-## Remallow - NPM Package Manager
+## Remallow - NPM / React Package Manager
 GUI for React Package Managing! 
 
 Its a simple graphical user interface tool for manage your package.json or npm package. You can search, install and delete your npm packages with terminal commands.
