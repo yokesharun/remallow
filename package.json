@@ -1,18 +1,32 @@
 {
   "name": "remallow",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "GUI for NPM Package Managing!",
   "scripts": {
     "server-build": "webpack --mode=production --config ./webpack.server.config.js",
     "ui-build": "webpack --mode=production --config ./webpack.ui.config.js",
     "ui": "webpack-dev-server --mode=development --config ./webpack.ui.config.js",
     "server": "nodemon ./server/bin/index.js localhost 8081",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run ui-build && npm run server-build"
   },
   "main": "./server/bin/index.js",
   "bin": {
-    "remallow": "./server/bin/index.js"
+    "remallow": "./dist/server/main.js"
   },
+  "keywords": [
+    "react",
+    "npm",
+    "yarn",
+    "package",
+    "package manager",
+    "npm gui",
+    "gui",
+    "react gui",
+    "remallow",
+    "yarn package manager",
+    "npm package manager"
+  ],
   "bugs": {
     "url": "https://github.com/yokesharun/remallow/issues",
     "email": "ayokesh.cse@gmail.com"
@@ -54,5 +68,9 @@
   },
   "engines": {
     "node": ">=7.0.0"
-  }
+  },
+  "files": [
+    "/dist/**",
+    "/yarn.lock"
+  ]
 }

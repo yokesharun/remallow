@@ -18,6 +18,7 @@ You need to install it globally using npm
 npm install -g remallow
 ```
 
+Note: make sure you have install all packages in your project using npm or yarn
 ## Validate Installation
 
 Now Remallow package is globally installed in your local machine and you can use it anywhere inside your local machine.
@@ -53,7 +54,6 @@ Report your issues here : https://github.com/yokesharun/remallow/issues
 ## Thanks
 
 - [Bulma CSS Framwork](https://github.com/jgthms/bulma) for design
-
 
 ## License
 

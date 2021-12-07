@@ -1,3 +1,4 @@
 node_modules
 dist
 ui/assets/.DS_Store
+.DS_Store
