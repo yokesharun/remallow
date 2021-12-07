@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require('colors');
+require("colors");
 const { execSync } = require("child_process");
 const { initializeStaticRoutes } = require("../static-files");
 const { appRoutes } = require("../routes");
@@ -57,9 +57,11 @@ const getPackage = (res) => {
     ChromeLauncher.launch({
       startingUrl: "http://127.0.0.1:8081",
     }).then((chrome) => {
-      console.log(`Remallow Package Manager running on http://127.0.0.1:8081`.green);
+      console.log(
+        `Remallow Package Manager running on http://127.0.0.1:8081`.green
+      );
     });
   } catch (e) {
-    consola.error(e);
+    console.error(e);
   }
 })();

@@ -1,6 +1,6 @@
 {
   "name": "remallow",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "GUI for NPM Package Managing!",
   "scripts": {
     "server-build": "webpack --mode=production --config ./webpack.server.config.js",
@@ -9,7 +9,7 @@
     "server": "nodemon ./server/bin/index.js localhost 8081",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "main": "./lib/exe.js",
+  "main": "./server/bin/index.js",
   "bin": {
     "remallow": "./server/bin/index.js"
   },
@@ -25,15 +25,22 @@
   "license": "MIT",
   "homepage": "https://github.com/yokesharun/remallow#readme",
   "dependencies": {
+    "chrome-launcher": "^0.15.0",
+    "colors": "^1.4.0",
+    "express": "^4.17.1",
+    "minimist": "^1.2.5",
+    "react-github-btn": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-react": "^7.16.0",
+    "axios": "^0.24.0",
     "babel-loader": "^8.2.3",
     "css-loader": "^6.5.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
+    "lodash": "^4.17.21",
     "node-loader": "^2.0.0",
     "nodemon": "^2.0.15",
     "react": "^17.0.2",
@@ -43,16 +50,9 @@
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0",
-    "webpack-node-externals": "^3.0.0",
-    "react-github-btn": "^1.2.1",
-    "chrome-launcher": "^0.15.0",
-    "axios": "^0.24.0",
-    "lodash": "^4.17.21",
-    "minimist": "^1.2.5",
-    "colors": "^1.4.0"
+    "webpack-node-externals": "^3.0.0"
   },
   "engines": {
-    "node": ">=6.0.0"
-  },
-  "enginesStrict": true
+    "node": ">=7.0.0"
+  }
 }
