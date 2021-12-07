@@ -1,9 +1,10 @@
 import axios from "axios";
 
-export const getPackage = ({ setIsLoading, setPackages, setLastActivity }) => {
+export const getPackage = ({ setIsLoading, setPackages, setLastActivity, params }) => {
   setIsLoading(true);
   axios
     .get("http://127.0.0.1:8081/packages", {
+      params: params,
       mode: "no-cors",
     })
     .then(function (response) {
@@ -54,6 +55,7 @@ export const installPackage = ({
 
 export const uninstallPackage = ({
   item,
+  manager,
   event,
   getAllPackages,
   setPackageName,
@@ -63,6 +65,7 @@ export const uninstallPackage = ({
     .get("http://127.0.0.1:8081/package/uninstall", {
       params: {
         packageName: item,
+        manager
       },
     })
     .then(function (response) {

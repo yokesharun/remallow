@@ -57,3 +57,12 @@
 .search-item {
   cursor: pointer;
 }
+
+.manager-block{
+  text-align: center;
+  margin: 0 auto;
+}
+
+.manager-block .block button{
+  margin: 1%;
+}

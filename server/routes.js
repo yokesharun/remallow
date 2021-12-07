@@ -40,13 +40,14 @@ function appRoutes({app, getPackage}) {
       query: { manager, dependency, packageName },
     } = req;
 
+    const installKey = manager === 'npm' ? 'install' : 'add';
     const resultKeyword = cleanup(packageName);
 
     console.log("Installing... ".green + resultKeyword);
-    console.log(`${manager} install ${packageName} ${dependency}`.green);
+    console.log(`${manager} ${installKey} ${packageName} ${dependency}`.green);
 
     exec(
-      `${manager} install ${packageName} ${dependency}`,
+      `${manager} ${installKey} ${packageName} ${dependency}`,
       (error, stdout, stderr) => {
         if (error) {
           console.log(`error: ${error.message}`.red);
@@ -73,9 +74,13 @@ function appRoutes({app, getPackage}) {
   });
 
   app.get("/package/uninstall", function (req, res) {
-    console.log("Removing... ".green + req.query.packageName);
+    const {
+      query: { manager, packageName },
+    } = req;
+    console.log("Removing... ".green + packageName);
+    const installKey = manager === 'npm' ? 'uninstall' : 'remove';
 
-    exec(`npm uninstall ${req.query.packageName}`, (error, stdout, stderr) => {
+    exec(`${manager} ${installKey} ${packageName}`, (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`.red);
         res.status(500).send({

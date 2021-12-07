@@ -9,11 +9,10 @@ import Packages from "./Packages";
 import { useDebounce } from "../utils/hooks";
 import _ from "lodash";
 
-const List = () => {
+const List = ({manager, setManager}) => {
   const [packages, setPackages] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [packageName, setPackageName] = useState("");
-  const [manager, setManager] = useState("npm");
   const [dependency, setDependency] = useState("--save");
   const [lastActivity, setLastActivity] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -27,7 +26,7 @@ const List = () => {
   }, []);
 
   const getAllPackages = () => {
-    getPackage({ setIsLoading, setPackages, setLastActivity });
+    getPackage({ setIsLoading, setPackages, setLastActivity, manager });
   };
 
   const debouncedSearchTerm = useDebounce(packageName, 500);
@@ -80,6 +79,7 @@ const List = () => {
       uninstallPackage({
         item,
         event,
+        manager,
         getAllPackages,
         setPackageName,
         setLastActivity,
@@ -173,7 +173,7 @@ const List = () => {
         </div>
         <span>
           Terminal cmd:{" "}
-          <code>{`${manager} install ${packageName} ${dependency}`} </code>
+          <code>{`${manager} ${manager === 'npm' ? 'install' : 'add' } ${packageName} ${dependency}`} </code>
         </span>
         <div className="field">
           <button
