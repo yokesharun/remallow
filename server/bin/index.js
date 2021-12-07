@@ -3,8 +3,16 @@ require('colors');
 const { execSync } = require("child_process");
 const { initializeStaticRoutes } = require("../static-files");
 const { appRoutes } = require("../routes");
+const parseArgs = require("minimist");
 
 const currentFolder = process.cwd();
+const args = parseArgs(process.argv);
+
+if (args.test) {
+  console.log("Remallow installed successfully...".blue);
+  console.log("Type: remallow to start the application".blue);
+  process.exit();
+}
 
 const getPackage = (res) => {
   var fs = require("fs"),
@@ -19,7 +27,7 @@ const getPackage = (res) => {
       });
       return;
     }
-    const stdout = execSync(`npm list --json=true`).toString();
+    const stdout = execSync(`npm list --depth=0 --json=true`).toString();
     res.send({
       success: true,
       raw: JSON.parse(jsonString),
