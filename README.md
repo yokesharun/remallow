@@ -30,10 +30,11 @@ remallow --test
 
 ## Usage
 
-Open Terminal and navigate to your npm or react package where your package.json is located and type
+Open Terminal and navigate to your npm or react project where your package.json is located and type
 
 ```
-remallow
+cd ./react-npm-project // navigate to your project where your package.json is located
+remallow  // run this command
 ```
 
 ## Roadmap
