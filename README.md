@@ -42,6 +42,10 @@ Open Terminal and navigate to your npm or react project where your package.json 
 cd ./react-npm-project        // navigate to your project where your package.json is located
 remallow                     // run this command
 ```
+## Screenshot
+
+![Screenshot 2021-12-09 at 3 23 09 PM](https://user-images.githubusercontent.com/12830078/145374242-29284b59-d158-4707-b6da-6619f9858098.png)
+
 
 ## Roadmap
 - Code Coverage
