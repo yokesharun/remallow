@@ -1,4 +1,9 @@
 ## Remallow - NPM / React Package Manager
+
+![GitHub package.json version](https://img.shields.io/github/package-json/v/yokesharun/remallow)
+![Downloads](https://img.shields.io/npm/dt/remallow)
+[![License](https://img.shields.io/badge/License-MIT-blue)](#license)
+
 GUI for React Package Managing! 
 
 Its a simple graphical user interface tool for manage your package.json or npm package. You can search, install and delete your npm packages with terminal commands.
