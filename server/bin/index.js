@@ -60,13 +60,14 @@ const getPackage = (res) => {
       console.log("listening at %s:%s".magenta, host, port);
     });
 
-    // ChromeLauncher.launch({
-    //   startingUrl: "http://127.0.0.1:8081",
-    // }).then((chrome) => {
-    //   console.log(
-    //     `Remallow Package Manager running on http://127.0.0.1:8081`.green
-    //   );
-    // });
+    ChromeLauncher.launch({
+      startingUrl: "http://127.0.0.1:8081",
+    }).then((chrome) => {
+      console.log(
+        `Remallow Package Manager running on http://127.0.0.1:8081`.green
+      );
+    });
+
   } catch (e) {
     console.error(e);
   }

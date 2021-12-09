@@ -8,15 +8,13 @@ const Packages = ({ dependencies, option, outdated }) => {
       <div className="tile is-child box item-wrapper">
         <div className="half">
           <p className="title is-size-6">{item}</p>
-        </div>
-        <div className="half">
           <div className="tags has-addons">
             <span className="tag is-link">{option}</span>
             <span className="tag is-link is-light">{dependencies[item]}</span>
             {outdated[item] && (
               <span className="tag is-danger is-light outdated">outdated</span>
             )}
-          </div>
+        </div>
         </div>
         <div className="half">
           {outdated[item] && (

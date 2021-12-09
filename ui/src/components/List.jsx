@@ -119,7 +119,10 @@ const List = ({ manager, setManager }) => {
   const depPackages = Object.keys(newObj.dependencies);
   const devDepPackages = Object.keys(newObj.devDependencies);
 
-  const { currentFolder = "", raw: { name: projectName = "" } = {} } = packages;
+  const {
+    currentFolder = "",
+    raw: { name: projectName = "Fetching Packages Please wait..." } = {},
+  } = packages;
 
   const getSearchResults = () => {
     console.log(searchResult);
