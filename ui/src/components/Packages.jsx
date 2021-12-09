@@ -1,21 +1,39 @@
 import React from "react";
 
-const Packages = ({ listOfPackages }) => {
-  return listOfPackages.map((item) => (
-    <div className="column is-one-third">
+const Packages = ({ dependencies, option, outdated }) => {
+  const packages = Object.keys(dependencies);
+  console.log(outdated);
+  return packages.map((item) => (
+    <div className="column is-half">
       <div className="tile is-child box item-wrapper">
-        <div>
+        <div className="half">
           <p className="title is-size-6">{item}</p>
-          <div className="control">
-            <div className="tags has-addons">
-              <span className="tag is-link">version</span>
-              <span className="tag is-light">0.9.3</span>
-            </div>
+        </div>
+        <div className="half">
+          <div className="tags has-addons">
+            <span className="tag is-link">{option}</span>
+            <span className="tag is-link is-light">{dependencies[item]}</span>
+            {outdated[item] && (
+              <span className="tag is-danger is-light outdated">outdated</span>
+            )}
           </div>
         </div>
         <div className="half">
+          {outdated[item] && (
+            <button
+              className="button is-success is-outlined is-small action-btn"
+              data-name="upgrade"
+              data-item={item}
+              title="Upgrade"
+            >
+              <span className="icon is-small">
+                <i className="fas fa-arrow-up"></i>
+              </span>
+            </button>
+          )}
           <button
             className="button is-danger is-outlined is-small"
+            data-name="uninstall"
             data-item={item}
             title="Uninstall"
           >

@@ -1,6 +1,11 @@
 import axios from "axios";
 
-export const getPackage = ({ setIsLoading, setPackages, setLastActivity, params }) => {
+export const getPackage = ({
+  setIsLoading,
+  setPackages,
+  setLastActivity,
+  params,
+}) => {
   setIsLoading(true);
   axios
     .get("http://127.0.0.1:8081/packages", {
@@ -34,6 +39,7 @@ export const installPackage = ({
   axios
     .get("http://127.0.0.1:8081/package/install", {
       params,
+      mode: "no-cors",
     })
     .then(function (response) {
       if (response.data.success) {
@@ -65,8 +71,9 @@ export const uninstallPackage = ({
     .get("http://127.0.0.1:8081/package/uninstall", {
       params: {
         packageName: item,
-        manager
+        manager,
       },
+      mode: "no-cors",
     })
     .then(function (response) {
       if (response.data.success) {
@@ -96,6 +103,50 @@ export const uninstallPackage = ({
     });
 };
 
+export const upgradePackage = ({
+  item,
+  manager,
+  event,
+  getAllPackages,
+  setPackageName,
+  setLastActivity,
+}) => {
+  axios
+    .get("http://127.0.0.1:8081/package/upgrade", {
+      params: {
+        packageName: item,
+        manager,
+      },
+      mode: "no-cors",
+    })
+    .then(function (response) {
+      if (response.data.success) {
+        getAllPackages();
+      }
+      setPackageName("");
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+      setLastActivity(error.message);
+    })
+    .then(function () {
+      // always executed
+      if (event.target.tagName === "BUTTON") {
+        event.target.className = event.target.className.replace(
+          "is-loading",
+          ""
+        );
+        event.target.blur();
+      } else {
+        const element = event.target.closest("button");
+        element.className = element.className.replace("is-loading", "");
+        element.blur();
+      }
+      setLastActivity(`upgraded ${item} package`);
+    });
+};
+
 export const searchPackage = ({
   packageName,
   setLastActivity,
@@ -108,6 +159,7 @@ export const searchPackage = ({
       params: {
         keyword: packageName,
       },
+      mode: "no-cors",
     })
     .then(function (response) {
       console.log(response.data);

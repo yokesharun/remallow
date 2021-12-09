@@ -58,11 +58,19 @@
   cursor: pointer;
 }
 
-.manager-block{
+.manager-block {
   text-align: center;
   margin: 0 auto;
 }
 
-.manager-block .block button{
+.manager-block .block button {
   margin: 1%;
+}
+
+.action-btn {
+  margin-right: 5px;
+}
+
+.outdated {
+  margin-left: 10px !important;
 }

@@ -3,13 +3,14 @@ import {
   getPackage,
   installPackage,
   uninstallPackage,
+  upgradePackage,
   searchPackage,
 } from "../utils/api";
 import Packages from "./Packages";
 import { useDebounce } from "../utils/hooks";
 import _ from "lodash";
 
-const List = ({manager, setManager}) => {
+const List = ({ manager, setManager }) => {
   const [packages, setPackages] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [packageName, setPackageName] = useState("");
@@ -44,7 +45,7 @@ const List = ({manager, setManager}) => {
 
   const install = () => {
     if (packageName !== "") {
-      if (listOfPackages.includes(packageName)) {
+      if (depPackages.concat(devDepPackages).includes(packageName)) {
         setLastActivity(`${packageName} is Already Installed!`);
         return;
       }
@@ -66,17 +67,26 @@ const List = ({manager, setManager}) => {
 
   const clickEventListener = (event) => {
     let item;
+    const element = event.target.closest("button");
 
     if (event.target.tagName === "BUTTON") {
       item = event.target.getAttribute("data-item");
       event.target.className += " is-loading";
     } else {
-      const element = event.target.closest("button");
       element.className += " is-loading";
       item = element.getAttribute("data-item");
     }
-    if (item) {
+    if (item && element.getAttribute("data-name") === "uninstall") {
       uninstallPackage({
+        item,
+        event,
+        manager,
+        getAllPackages,
+        setPackageName,
+        setLastActivity,
+      });
+    } else if (item && element.getAttribute("data-name") === "upgrade") {
+      upgradePackage({
         item,
         event,
         manager,
@@ -93,7 +103,7 @@ const List = ({manager, setManager}) => {
   };
 
   const obj = {
-    ...packages.json,
+    ...packages.raw,
   };
 
   const newObj = {
@@ -101,12 +111,15 @@ const List = ({manager, setManager}) => {
     dependencies: {
       ...obj.dependencies,
     },
+    devDependencies: {
+      ...obj.devDependencies,
+    },
   };
 
-  const listOfPackages = Object.keys(newObj.dependencies);
+  const depPackages = Object.keys(newObj.dependencies);
+  const devDepPackages = Object.keys(newObj.devDependencies);
 
-  const { currentFolder = "", json: { name: projectName = "" } = {} } =
-    packages;
+  const { currentFolder = "", raw: { name: projectName = "" } = {} } = packages;
 
   const getSearchResults = () => {
     console.log(searchResult);
@@ -151,7 +164,7 @@ const List = ({manager, setManager}) => {
           <input
             className="input is-link"
             type="text"
-            placeholder="Search or paste the package to install"
+            placeholder="Search or paste the command to install"
             onChange={(e) => setPackageName(e.target.value)}
             value={packageName}
           />
@@ -173,7 +186,11 @@ const List = ({manager, setManager}) => {
         </div>
         <span>
           Terminal cmd:{" "}
-          <code>{`${manager} ${manager === 'npm' ? 'install' : 'add' } ${packageName} ${dependency}`} </code>
+          <code>
+            {`${manager} ${
+              manager === "npm" ? "install" : "add"
+            } ${packageName} ${dependency}`}{" "}
+          </code>
         </span>
         <div className="field">
           <button
@@ -186,17 +203,26 @@ const List = ({manager, setManager}) => {
       </section>
       <section className="section">
         <h1 className="title is-size-5">
-          Installed Packages ({listOfPackages.length})
+          Installed Packages ({depPackages.length + devDepPackages.length})
         </h1>
         <h6 className="subtitle is-size-7">
           Packages listed here are fetched from your{" "}
           <strong>{currentFolder}/Package.json</strong> file.
         </h6>
         <div
-          className="columns is-multiline is-mobile list-items"
+          className="columns is-multiline is-mobile list-items is-full"
           id="packages"
         >
-          <Packages listOfPackages={listOfPackages} />
+          <Packages
+            dependencies={newObj.dependencies}
+            option="dependencies"
+            outdated={packages.outdated}
+          />
+          <Packages
+            dependencies={newObj.devDependencies}
+            option="devDependencies"
+            outdated={packages.outdated}
+          />
         </div>
       </section>
     </div>

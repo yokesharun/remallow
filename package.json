@@ -1,6 +1,6 @@
 {
   "name": "remallow",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "GUI for NPM Package Managing!",
   "scripts": {
     "server-build": "webpack --mode=production --config ./webpack.server.config.js",
@@ -43,7 +43,7 @@
     "colors": "^1.4.0",
     "express": "^4.17.1",
     "minimist": "^1.2.5",
-    "react-github-btn": "^1.2.1"
+    "react-github-btn": "^1.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

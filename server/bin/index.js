@@ -27,11 +27,17 @@ const getPackage = (res) => {
       });
       return;
     }
-    const stdout = execSync(`npm list --depth=0 --json=true`).toString();
+    let outdated = [];
+    try {
+      outdated = execSync(`npm outdated --json`).toString();
+    } catch (error) {
+      console.log("error", error.stdout.toString());
+      outdated = error.stdout.toString();
+    }
     res.send({
       success: true,
       raw: JSON.parse(jsonString),
-      json: JSON.parse(stdout),
+      outdated: JSON.parse(outdated),
       currentFolder,
     });
   });
@@ -54,13 +60,13 @@ const getPackage = (res) => {
       console.log("listening at %s:%s".magenta, host, port);
     });
 
-    ChromeLauncher.launch({
-      startingUrl: "http://127.0.0.1:8081",
-    }).then((chrome) => {
-      console.log(
-        `Remallow Package Manager running on http://127.0.0.1:8081`.green
-      );
-    });
+    // ChromeLauncher.launch({
+    //   startingUrl: "http://127.0.0.1:8081",
+    // }).then((chrome) => {
+    //   console.log(
+    //     `Remallow Package Manager running on http://127.0.0.1:8081`.green
+    //   );
+    // });
   } catch (e) {
     console.error(e);
   }
