@@ -1,19 +1,19 @@
-## Remallow - NPM / React Package Manager
-
-![GitHub package.json version](https://img.shields.io/github/package-json/v/yokesharun/remallow)
-![Downloads](https://img.shields.io/npm/dt/remallow)
-[![License](https://img.shields.io/badge/License-MIT-blue)](#license)
-
-GUI for React Package Managing! 
-
-Its a simple graphical user interface tool for manage your package.json or npm package. You can search, install and delete your npm packages with terminal commands.
-Developed espicially for react projects.
 
 <div align="center">
   
-![dashboard](https://user-images.githubusercontent.com/12830078/145022400-6f44dd7b-5909-474d-9274-7a860e3d0758.png)
+  <img width="500px" src="https://user-images.githubusercontent.com/12830078/145022400-6f44dd7b-5909-474d-9274-7a860e3d0758.png" align="center" />
+  <h2 align="center">Remallow - NPM / React Package Manager</h2>
+  
+![GitHub package.json version](https://img.shields.io/github/package-json/v/yokesharun/remallow)
+![Downloads](https://img.shields.io/npm/dt/remallow)
+[![License](https://img.shields.io/badge/License-MIT-blue)](#license)
+  
+   <p align="center">GUI for React Package Managing! </p>
+   <p align="center">Its a simple graphical user interface tool for manage your package.json or npm package. You can search, install and delete your npm packages with terminal commands.Developed espicially for react projects. </p>
 
 </div>
+
+-------
 
 ## Installation
 
@@ -44,7 +44,7 @@ remallow                     // run this command
 ```
 ## Screenshot
 
-![Screenshot 2021-12-09 at 3 23 09 PM](https://user-images.githubusercontent.com/12830078/145374242-29284b59-d158-4707-b6da-6619f9858098.png)
+<img width="500px" src="https://user-images.githubusercontent.com/12830078/145374242-29284b59-d158-4707-b6da-6619f9858098.png" />
 
 
 ## Roadmap
