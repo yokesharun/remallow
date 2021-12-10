@@ -43,7 +43,7 @@ const getPackage = (res) => {
   });
 };
 
-(function init() {
+(async function init() {
   try {
     const ChromeLauncher = require("chrome-launcher");
     var express = require("express");
@@ -60,7 +60,7 @@ const getPackage = (res) => {
       console.log("listening at %s:%s".magenta, host, port);
     });
 
-    ChromeLauncher.launch({
+    await ChromeLauncher.launch({
       startingUrl: "http://127.0.0.1:8081",
     }).then((chrome) => {
       console.log(

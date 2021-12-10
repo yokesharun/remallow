@@ -7,18 +7,24 @@ const Manager = ({setManager}) => {
   };
   return (
     <div className="manager-block">
-      <div class="block">
-        Please select which package manager you are using for this project
+      <div className="notification is-link is-light">
+      Note: Do yarn install or npm install before proceeding to next step and to keep your project dependencies upto date or it might fail to load details.
+      <br/>If you're facing any issue please click the above issue button on the navigation bar and report.
+      If you like it dont forget to give *Star*
       </div>
-      <div class="block">
+      <div className="block">
+        Please select which package manager you are using for this project
+        <br/>(It works well with npm!)
+      </div>
+      <div className="block">
         <button
-          class="button is-link is-normal"
+          className="button is-link is-normal"
           onClick={() => updateManager("npm")}
         >
           NPM
         </button>
         <button
-          class="button is-link is-normal"
+          className="button is-link is-normal"
           onClick={() => updateManager("yarn")}
         >
           Yarn

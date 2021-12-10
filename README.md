@@ -50,11 +50,10 @@ remallow                     // run this command
 ## Roadmap
 - Code Coverage
 - yarn support
-- imporve API
+- improve API
 - Integration Testing
-- showing package.json version
+- showing Actual lock file version
 - adding more functionality to npm
-- npm package has update
 - Improve tests and coverage
 - Improve performance
 

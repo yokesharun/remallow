@@ -1,6 +1,6 @@
 {
   "name": "remallow",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "GUI for NPM Package Managing!",
   "scripts": {
     "server-build": "webpack --mode=production --config ./webpack.server.config.js",

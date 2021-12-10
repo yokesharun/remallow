@@ -129,7 +129,7 @@ const List = ({ manager, setManager }) => {
     return searchResult.slice(0, 8).map((i) => (
       <span
         onClick={(e) => updateSearch(i)}
-        class="tag is-light loader-block search-item"
+        className="tag is-light loader-block search-item"
       >
         {i.name}
       </span>
@@ -154,6 +154,7 @@ const List = ({ manager, setManager }) => {
         </h1>
         <h6 className="subtitle is-size-7">
           A simple tool to manager your <strong>package.json</strong> file.
+          (Please check your terminal for more details)
         </h6>
         <div className="field">
           <div className="search-results">
@@ -211,6 +212,7 @@ const List = ({ manager, setManager }) => {
         <h6 className="subtitle is-size-7">
           Packages listed here are fetched from your{" "}
           <strong>{currentFolder}/Package.json</strong> file.
+          It's not the actual version, It might change based on lock file.
         </h6>
         <div
           className="columns is-multiline is-mobile list-items is-full"
