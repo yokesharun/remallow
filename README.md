@@ -66,3 +66,5 @@ Report your issues here : https://github.com/yokesharun/remallow/issues
 ## License
 
 Released under [MIT](/LICENSE) by [@yokesharun](https://github.com/yokesharun).
+
+<a href="https://www.buymeacoffee.com/yokesharun" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
