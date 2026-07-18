@@ -1,11 +1,11 @@
 {
   "name": "remallow",
-  "version": "1.0.10",
-  "description": "GUI for NPM Package Managing!",
+  "version": "2.0.0",
+  "description": "A visual GUI for managing npm, yarn, and pnpm packages - search, install, upgrade, and remove packages from your browser",
   "scripts": {
-    "server-build": "webpack --mode=production --config ./webpack.server.config.js",
-    "ui-build": "webpack --mode=production --config ./webpack.ui.config.js",
-    "ui": "webpack-dev-server --mode=development --config ./webpack.ui.config.js",
+    "server-build": "npx webpack --mode=production --config ./webpack.server.config.js",
+    "ui-build": "npx webpack --mode=production --config ./webpack.ui.config.js",
+    "ui": "npx webpack-dev-server --mode=development --config ./webpack.ui.config.js",
     "server": "nodemon ./server/bin/index.js localhost 8081",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run ui-build && npm run server-build"
@@ -15,17 +15,24 @@
     "remallow": "./dist/server/main.js"
   },
   "keywords": [
-    "react",
-    "npm",
-    "yarn",
-    "package",
     "package manager",
     "npm gui",
+    "yarn gui",
+    "pnpm gui",
+    "visual package manager",
+    "dependency manager",
+    "npm search",
+    "npm install gui",
+    "package.json editor",
+    "developer tools",
     "gui",
-    "react gui",
     "remallow",
+    "node package manager",
+    "npm package manager",
     "yarn package manager",
-    "npm package manager"
+    "pnpm package manager",
+    "react",
+    "cli tool"
   ],
   "bugs": {
     "url": "https://github.com/yokesharun/remallow/issues",
@@ -35,22 +42,29 @@
     "type": "git",
     "url": "https://github.com/yokesharun/remallow.git"
   },
+  "funding": {
+    "type": "buymeacoffee",
+    "url": "https://www.buymeacoffee.com/yokesharun"
+  },
   "author": "Arun Yokesh",
   "license": "MIT",
   "homepage": "https://github.com/yokesharun/remallow#readme",
   "dependencies": {
-    "chrome-launcher": "^0.15.0",
-    "colors": "^1.4.0",
+    "chalk": "^4.1.2",
+    "cross-spawn": "^7.0.6",
     "express": "^4.17.1",
     "minimist": "^1.2.5",
+    "open": "^8.4.2",
     "react-github-btn": "^1.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-react": "^7.16.0",
+    "@fortawesome/fontawesome-free": "^6.5.0",
     "axios": "^0.24.0",
     "babel-loader": "^8.2.3",
+    "bulma": "^0.9.4",
     "css-loader": "^6.5.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
@@ -67,7 +81,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "engines": {
-    "node": ">=7.0.0"
+    "node": ">=14.0.0"
   },
   "files": [
     "/dist/**",

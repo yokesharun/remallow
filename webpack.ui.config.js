@@ -8,14 +8,13 @@ module.exports = {
     static: path.resolve(__dirname, "../dist/ui"),
     hot: true,
     port: 3663,
+    proxy: {
+      "/packages": "http://localhost:8081",
+      "/package": "http://localhost:8081",
+    },
   },
   module: {
     rules: [
-      {
-        test: /\.(js|jsx|ts|tsx)$/,
-        exclude: /(node_modules)/,
-        loader: "babel-loader",
-      },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -40,6 +39,10 @@ module.exports = {
             },
           },
         ],
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+        type: "asset/resource",
       },
     ],
   },

@@ -1,161 +1,105 @@
 import axios from "axios";
 
-export const getPackage = ({
-  setIsLoading,
-  setPackages,
-  setLastActivity,
-  params,
-}) => {
+export const getPackage = ({ setIsLoading, setPackages, showToast }) => {
   setIsLoading(true);
-  axios
-    .get("http://127.0.0.1:8081/packages", {
-      params: params,
-    })
-    .then(function (response) {
+  return axios
+    .get("/packages")
+    .then((response) => {
       setPackages(response.data);
     })
-    .catch(function (error) {
-      console.log(error);
-      setLastActivity(error.message);
+    .catch((error) => {
+      if (showToast) showToast(error.message, "error");
     })
-    .then(function () {
+    .finally(() => {
       setIsLoading(false);
     });
 };
 
-export const installPackage = ({
-  packageName,
-  setIsLoading,
-  params,
-  setPackageName,
-  setLastActivity,
-  getAllPackages,
-}) => {
+export const installPackage = ({ packageName, setIsLoading, params, setPackageName, showToast, getAllPackages }) => {
   setIsLoading(true);
-  axios
-    .post("http://127.0.0.1:8081/package/install", null, {
-      params,
-    })
-    .then(function (response) {
+  return axios
+    .post("/package/install", null, { params })
+    .then((response) => {
       if (response.data.success) {
         getAllPackages();
+        if (showToast) showToast(`Successfully installed ${packageName}`, "success");
       }
       setPackageName("");
     })
-    .catch(function (error) {
-      console.log(error);
-      setLastActivity(error.message);
+    .catch((error) => {
+      if (showToast) showToast(`Failed to install ${packageName}: ${error.message}`, "error");
     })
-    .then(function () {
-      setLastActivity(`Installed ${packageName} package`);
+    .finally(() => {
       setIsLoading(false);
     });
 };
 
-export const uninstallPackage = ({
-  item,
-  manager,
-  event,
-  getAllPackages,
-  setPackageName,
-  setLastActivity,
-}) => {
-  axios
-    .post("http://127.0.0.1:8081/package/uninstall", null, {
-      params: {
-        packageName: item,
-        manager,
-      },
+export const uninstallPackage = ({ item, manager, showToast, getAllPackages, setLoadingPackages }) => {
+  if (setLoadingPackages) setLoadingPackages((prev) => ({ ...prev, [item]: "uninstall" }));
+  return axios
+    .post("/package/uninstall", null, {
+      params: { packageName: item, manager },
     })
-    .then(function (response) {
+    .then((response) => {
       if (response.data.success) {
         getAllPackages();
+        if (showToast) showToast(`Uninstalled ${item}`, "success");
       }
-      setPackageName("");
     })
-    .catch(function (error) {
-      console.log(error);
-      setLastActivity(error.message);
+    .catch((error) => {
+      if (showToast) showToast(`Failed to uninstall ${item}: ${error.message}`, "error");
     })
-    .then(function () {
-      if (event.target.tagName === "BUTTON") {
-        event.target.className = event.target.className.replace(
-          "is-loading",
-          ""
-        );
-        event.target.blur();
-      } else {
-        const element = event.target.closest("button");
-        element.className = element.className.replace("is-loading", "");
-        element.blur();
-      }
-      setLastActivity(`Uninstalled ${item} package`);
+    .finally(() => {
+      if (setLoadingPackages) setLoadingPackages((prev) => {
+        const next = { ...prev };
+        delete next[item];
+        return next;
+      });
     });
 };
 
-export const upgradePackage = ({
-  item,
-  manager,
-  event,
-  getAllPackages,
-  setPackageName,
-  setLastActivity,
-}) => {
-  axios
-    .post("http://127.0.0.1:8081/package/upgrade", null, {
-      params: {
-        packageName: item,
-        manager,
-      },
+export const upgradePackage = ({ item, manager, showToast, getAllPackages, setLoadingPackages }) => {
+  if (setLoadingPackages) setLoadingPackages((prev) => ({ ...prev, [item]: "upgrade" }));
+  return axios
+    .post("/package/upgrade", null, {
+      params: { packageName: item, manager },
     })
-    .then(function (response) {
+    .then((response) => {
       if (response.data.success) {
         getAllPackages();
+        if (showToast) showToast(`Upgraded ${item}`, "success");
       }
-      setPackageName("");
     })
-    .catch(function (error) {
-      console.log(error);
-      setLastActivity(error.message);
+    .catch((error) => {
+      if (showToast) showToast(`Failed to upgrade ${item}: ${error.message}`, "error");
     })
-    .then(function () {
-      if (event.target.tagName === "BUTTON") {
-        event.target.className = event.target.className.replace(
-          "is-loading",
-          ""
-        );
-        event.target.blur();
-      } else {
-        const element = event.target.closest("button");
-        element.className = element.className.replace("is-loading", "");
-        element.blur();
-      }
-      setLastActivity(`Upgraded ${item} package`);
+    .finally(() => {
+      if (setLoadingPackages) setLoadingPackages((prev) => {
+        const next = { ...prev };
+        delete next[item];
+        return next;
+      });
     });
 };
 
-export const searchPackage = ({
-  packageName,
-  setLastActivity,
-  setSearchResult,
-  setIsSearchLoading,
-}) => {
+export const searchPackage = ({ packageName, setSearchResult, setIsSearchLoading }) => {
   setIsSearchLoading(true);
-  axios
-    .get("http://127.0.0.1:8081/package/search", {
-      params: {
-        keyword: packageName,
-      },
+  return axios
+    .get("/package/search", { params: { keyword: packageName } })
+    .then((response) => {
+      setSearchResult(response.data.json || []);
     })
-    .then(function (response) {
-      setSearchResult(response.data.json);
+    .catch(() => {
+      setSearchResult([]);
     })
-    .catch(function (error) {
-      console.log(error);
-      setLastActivity(error.message);
-    })
-    .then(function () {
-      setLastActivity(`Searched for ${packageName}`);
+    .finally(() => {
       setIsSearchLoading(false);
     });
+};
+
+export const getPackageInfo = (name) => {
+  return axios
+    .get("/package/info", { params: { name } })
+    .then((response) => response.data.data)
+    .catch(() => null);
 };

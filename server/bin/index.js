@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-require("colors");
+const chalk = require("chalk");
 const { execSync } = require("child_process");
+const path = require("path");
+const fs = require("fs");
 const { initializeStaticRoutes } = require("../static-files");
 const { appRoutes } = require("../routes");
 const parseArgs = require("minimist");
@@ -9,35 +11,34 @@ const currentFolder = process.cwd();
 const args = parseArgs(process.argv);
 
 if (args.test) {
-  console.log("Remallow installed successfully...".blue);
-  console.log("Type: remallow to start the application".blue);
+  console.log(chalk.blue("Remallow installed successfully..."));
+  console.log(chalk.blue("Type: remallow to start the application"));
   process.exit();
 }
 
 const getPackage = (res) => {
-  var fs = require("fs"),
-    path = require("path"),
-    filePath = path.join(currentFolder, "package.json");
+  const filePath = path.join(currentFolder, "package.json");
   fs.readFile(filePath, "utf8", (err, jsonString) => {
     if (err) {
-      console.log("File read failed:".red, err);
+      console.log(chalk.red("File read failed:"), err);
       res.status(500).send({
         success: false,
         message: "unable to load package.json",
       });
       return;
     }
-    let outdated = [];
+    let outdated = "{}";
     try {
-      outdated = execSync(`npm outdated --json`).toString();
+      outdated = execSync("npm outdated --json", { timeout: 30000 }).toString();
     } catch (error) {
-      console.log("error", error.stdout.toString());
-      outdated = error.stdout.toString();
+      if (error.stdout) {
+        outdated = error.stdout.toString();
+      }
     }
     res.send({
       success: true,
       raw: JSON.parse(jsonString),
-      outdated: JSON.parse(outdated),
+      outdated: JSON.parse(outdated || "{}"),
       currentFolder,
     });
   });
@@ -45,30 +46,23 @@ const getPackage = (res) => {
 
 (async function init() {
   try {
-    const ChromeLauncher = require("chrome-launcher");
-    var express = require("express");
-    var app = express();
+    const open = require("open");
+    const express = require("express");
+    const app = express();
+
+    app.use(express.json());
     initializeStaticRoutes(app);
-    appRoutes({
-      app,
-      getPackage,
-    });
+    appRoutes({ app, getPackage });
 
     const port = args.port || process.env.PORT || 8081;
     const host = "http://127.0.0.1";
 
     app.listen(port, function () {
-      console.log(`listening at ${host}:${port}`.magenta);
+      console.log(chalk.magenta(`listening at ${host}:${port}`));
     });
 
-    await ChromeLauncher.launch({
-      startingUrl: `${host}:${port}`,
-    }).then((chrome) => {
-      console.log(
-        `Remallow Package Manager running on ${host}:${port}`.green
-      );
-    });
-
+    await open(`${host}:${port}`);
+    console.log(chalk.green(`Remallow Package Manager running on ${host}:${port}`));
   } catch (e) {
     console.error(e);
   }
