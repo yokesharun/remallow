@@ -1,138 +1,108 @@
-const { exec } = require("child_process");
-const { cleanup } = require("./utils/helper");
+const { execFile } = require("child_process");
+const { validatePackageName, validateManager } = require("./utils/helper");
 
 function appRoutes({ app, getPackage }) {
-  // Add headers before the routes are defined
   app.use(function (req, res, next) {
-    // Website you wish to allow to connect
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:3663");
-
-    // Request methods you wish to allow
     res.setHeader(
       "Access-Control-Allow-Methods",
       "GET, POST, OPTIONS, PUT, PATCH, DELETE"
     );
-
-    // Request headers you wish to allow
     res.setHeader(
       "Access-Control-Allow-Headers",
       "X-Requested-With,content-type"
     );
-
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
     res.setHeader("Access-Control-Allow-Credentials", true);
-
-    // Pass to next layer of middleware
     next();
-  });
-
-  app.get("/", function (req, res) {
-    res.send("Welcome to remallow!");
   });
 
   app.get("/packages", function (req, res) {
     getPackage(res);
   });
 
-  app.get("/package/install", function (req, res) {
+  app.post("/package/install", function (req, res) {
     const {
       query: { manager, dependency, packageName },
     } = req;
 
+    if (!validateManager(manager) || !validatePackageName(packageName)) {
+      return res.status(400).send({ success: false, message: "Invalid input" });
+    }
+
+    const validDeps = ["--save", "--save-dev"];
+    const dep = validDeps.includes(dependency) ? dependency : "--save";
     const installKey = manager === "npm" ? "install" : "add";
-    const resultKeyword = cleanup(packageName);
 
-    console.log("Installing... ".green + resultKeyword);
-    console.log(`${manager} ${installKey} ${packageName} ${dependency}`.green);
+    console.log("Installing... ".green + packageName);
 
-    exec(
-      `${manager} ${installKey} ${packageName} ${dependency}`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.log(`error: ${error.message}`.red);
-          res.status(500).send({
-            success: false,
-            message: `error: ${error.message}`,
-          });
-          return;
-        }
-        if (stderr) {
-          console.log(`stderr: ${stderr}`.red);
-          res.status(500).send({
-            success: false,
-            message: `stderr: ${stderr}`,
-          });
-          return;
-        }
-        console.log(`stdout: ${stdout}`);
-        res.status(200).send({
-          success: true,
-        });
-      }
-    );
-  });
-
-  app.get("/package/uninstall", function (req, res) {
-    const {
-      query: { manager, packageName },
-    } = req;
-    console.log("Removing... ".green + packageName);
-    const installKey = manager === "npm" ? "uninstall" : "remove";
-
-    exec(`${manager} ${installKey} ${packageName}`, (error, stdout, stderr) => {
+    execFile(manager, [installKey, packageName, dep], (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`.red);
-        res.status(500).send({
+        return res.status(500).send({
           success: false,
           message: `error: ${error.message}`,
         });
-        return;
       }
       if (stderr) {
-        console.log(`stderr: ${stderr}`.red);
-        res.status(500).send({
-          success: false,
-          message: `stderr: ${stderr}`,
-        });
-        return;
+        console.log(`stderr (warning): ${stderr}`.yellow);
       }
       console.log(`stdout: ${stdout}`);
-      res.status(200).send({
-        success: true,
-      });
+      res.status(200).send({ success: true });
     });
   });
 
-  app.get("/package/upgrade", function (req, res) {
+  app.post("/package/uninstall", function (req, res) {
     const {
       query: { manager, packageName },
     } = req;
-    console.log("Upgrading... ".green + packageName);
-    const installKey = "upgrade";
-    console.log(`${manager} ${installKey} ${packageName}`);
 
-    exec(`${manager} ${installKey} ${packageName}`, (error, stdout, stderr) => {
+    if (!validateManager(manager) || !validatePackageName(packageName)) {
+      return res.status(400).send({ success: false, message: "Invalid input" });
+    }
+
+    const installKey = manager === "npm" ? "uninstall" : "remove";
+    console.log("Removing... ".green + packageName);
+
+    execFile(manager, [installKey, packageName], (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`.red);
-        res.status(500).send({
+        return res.status(500).send({
           success: false,
           message: `error: ${error.message}`,
         });
-        return;
       }
       if (stderr) {
-        console.log(`stderr: ${stderr}`.red);
-        res.status(500).send({
-          success: false,
-          message: `stderr: ${stderr}`,
-        });
-        return;
+        console.log(`stderr (warning): ${stderr}`.yellow);
       }
       console.log(`stdout: ${stdout}`);
-      res.status(200).send({
-        success: true,
-      });
+      res.status(200).send({ success: true });
+    });
+  });
+
+  app.post("/package/upgrade", function (req, res) {
+    const {
+      query: { manager, packageName },
+    } = req;
+
+    if (!validateManager(manager) || !validatePackageName(packageName)) {
+      return res.status(400).send({ success: false, message: "Invalid input" });
+    }
+
+    console.log("Upgrading... ".green + packageName);
+
+    execFile(manager, ["upgrade", packageName], (error, stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`.red);
+        return res.status(500).send({
+          success: false,
+          message: `error: ${error.message}`,
+        });
+      }
+      if (stderr) {
+        console.log(`stderr (warning): ${stderr}`.yellow);
+      }
+      console.log(`stdout: ${stdout}`);
+      res.status(200).send({ success: true });
     });
   });
 
@@ -140,33 +110,30 @@ function appRoutes({ app, getPackage }) {
     const {
       query: { keyword },
     } = req;
-    // let removeElements = ["npm","yarn", "--save", "--save-dev", " install ", " add "];
-    const resultKeyword = cleanup(keyword);
 
-    console.log("Searching... ".green + resultKeyword);
+    if (!keyword || typeof keyword !== "string" || keyword.length > 100) {
+      return res.status(400).send({ success: false, message: "Invalid keyword" });
+    }
 
-    exec(`npm search ${resultKeyword} --json`, (error, stdout, stderr) => {
+    const sanitized = keyword.replace(/[^a-zA-Z0-9@/_.-]/g, "");
+    console.log("Searching... ".green + sanitized);
+
+    execFile("npm", ["search", sanitized, "--json"], (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`.red);
-        res.status(500).send({
+        return res.status(500).send({
           success: false,
           message: `error: ${error.message}`,
         });
-        return;
       }
       if (stderr) {
-        console.log(`stderr: ${stderr}`.red);
-        res.status(500).send({
-          success: false,
-          message: `stderr: ${stderr}`,
-        });
-        return;
+        console.log(`stderr (warning): ${stderr}`.yellow);
       }
       console.log(`stdout: ${stdout}`);
       res.status(200).send({
         success: true,
         json: JSON.parse(stdout),
-        keyword: resultKeyword,
+        keyword: sanitized,
       });
     });
   });

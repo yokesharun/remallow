@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   getPackage,
   installPackage,
@@ -18,12 +18,52 @@ const List = ({ manager, setManager }) => {
   const [lastActivity, setLastActivity] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const managerRef = useRef(manager);
+
+  useEffect(() => {
+    managerRef.current = manager;
+  }, [manager]);
 
   useEffect(() => {
     getAllPackages();
-    document
-      .getElementById("packages")
-      .addEventListener("click", clickEventListener, true);
+
+    const listener = (event) => {
+      let item;
+      const element = event.target.closest("button");
+      if (!element) return;
+
+      if (event.target.tagName === "BUTTON") {
+        item = event.target.getAttribute("data-item");
+        event.target.className += " is-loading";
+      } else {
+        element.className += " is-loading";
+        item = element.getAttribute("data-item");
+      }
+
+      if (item && element.getAttribute("data-name") === "uninstall") {
+        uninstallPackage({
+          item,
+          event,
+          manager: managerRef.current,
+          getAllPackages,
+          setPackageName,
+          setLastActivity,
+        });
+      } else if (item && element.getAttribute("data-name") === "upgrade") {
+        upgradePackage({
+          item,
+          event,
+          manager: managerRef.current,
+          getAllPackages,
+          setPackageName,
+          setLastActivity,
+        });
+      }
+    };
+
+    const el = document.getElementById("packages");
+    el.addEventListener("click", listener, true);
+    return () => el.removeEventListener("click", listener, true);
   }, []);
 
   const getAllPackages = () => {
@@ -59,46 +99,12 @@ const List = ({ manager, setManager }) => {
         setIsLoading,
         setLastActivity,
         setPackageName,
-        setLastActivity,
         getAllPackages,
-      });
-    }
-  };
-
-  const clickEventListener = (event) => {
-    let item;
-    const element = event.target.closest("button");
-
-    if (event.target.tagName === "BUTTON") {
-      item = event.target.getAttribute("data-item");
-      event.target.className += " is-loading";
-    } else {
-      element.className += " is-loading";
-      item = element.getAttribute("data-item");
-    }
-    if (item && element.getAttribute("data-name") === "uninstall") {
-      uninstallPackage({
-        item,
-        event,
-        manager,
-        getAllPackages,
-        setPackageName,
-        setLastActivity,
-      });
-    } else if (item && element.getAttribute("data-name") === "upgrade") {
-      upgradePackage({
-        item,
-        event,
-        manager,
-        getAllPackages,
-        setPackageName,
-        setLastActivity,
       });
     }
   };
 
   const updateSearch = (i) => {
-    console.log(i);
     setPackageName(i.name);
   };
 
@@ -125,9 +131,9 @@ const List = ({ manager, setManager }) => {
   } = packages;
 
   const getSearchResults = () => {
-    console.log(searchResult);
     return searchResult.slice(0, 8).map((i) => (
       <span
+        key={i.name}
         onClick={(e) => updateSearch(i)}
         className="tag is-light loader-block search-item"
       >
@@ -173,16 +179,10 @@ const List = ({ manager, setManager }) => {
             value={packageName}
           />
         </div>
-        {/* <div className="select is-link is-small field select-field" value="npm">
-          <select onChange={(e) => setManager(e.target.value)}>
-            <option value='npm'>npm</option>
-            <option value='yarn'>yarn</option>
-          </select>
-        </div> */}
         <div className="select is-link is-small field select-field">
           <select
             onChange={(e) => setDependency(e.target.value)}
-            value="--save"
+            value={dependency}
           >
             <option value="--save">dependencies</option>
             <option value="--save-dev">devDependencies</option>

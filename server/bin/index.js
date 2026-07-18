@@ -54,17 +54,18 @@ const getPackage = (res) => {
       getPackage,
     });
 
-    app.listen(8081, function () {
-      var host = "http://127.0.0.1";
-      var port = "8081";
-      console.log("listening at %s:%s".magenta, host, port);
+    const port = args.port || process.env.PORT || 8081;
+    const host = "http://127.0.0.1";
+
+    app.listen(port, function () {
+      console.log(`listening at ${host}:${port}`.magenta);
     });
 
     await ChromeLauncher.launch({
-      startingUrl: "http://127.0.0.1:8081",
+      startingUrl: `${host}:${port}`,
     }).then((chrome) => {
       console.log(
-        `Remallow Package Manager running on http://127.0.0.1:8081`.green
+        `Remallow Package Manager running on ${host}:${port}`.green
       );
     });
 

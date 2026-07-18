@@ -2,9 +2,8 @@ import React from "react";
 
 const Packages = ({ dependencies, option, outdated }) => {
   const packages = Object.keys(dependencies);
-  console.log(outdated);
   return packages.map((item) => (
-    <div className="column is-half">
+    <div key={item} className="column is-half">
       <div className="tile is-child box item-wrapper">
         <div className="half">
           <p className="title is-size-6">{item}</p>

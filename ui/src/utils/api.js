@@ -10,19 +10,15 @@ export const getPackage = ({
   axios
     .get("http://127.0.0.1:8081/packages", {
       params: params,
-      mode: "no-cors",
     })
     .then(function (response) {
-      // handle success
       setPackages(response.data);
     })
     .catch(function (error) {
-      // handle error
       console.log(error);
       setLastActivity(error.message);
     })
     .then(function () {
-      // always executed
       setIsLoading(false);
     });
 };
@@ -37,9 +33,8 @@ export const installPackage = ({
 }) => {
   setIsLoading(true);
   axios
-    .get("http://127.0.0.1:8081/package/install", {
+    .post("http://127.0.0.1:8081/package/install", null, {
       params,
-      mode: "no-cors",
     })
     .then(function (response) {
       if (response.data.success) {
@@ -48,12 +43,10 @@ export const installPackage = ({
       setPackageName("");
     })
     .catch(function (error) {
-      // handle error
       console.log(error);
       setLastActivity(error.message);
     })
     .then(function () {
-      // always executed
       setLastActivity(`Installed ${packageName} package`);
       setIsLoading(false);
     });
@@ -68,12 +61,11 @@ export const uninstallPackage = ({
   setLastActivity,
 }) => {
   axios
-    .get("http://127.0.0.1:8081/package/uninstall", {
+    .post("http://127.0.0.1:8081/package/uninstall", null, {
       params: {
         packageName: item,
         manager,
       },
-      mode: "no-cors",
     })
     .then(function (response) {
       if (response.data.success) {
@@ -82,12 +74,10 @@ export const uninstallPackage = ({
       setPackageName("");
     })
     .catch(function (error) {
-      // handle error
       console.log(error);
       setLastActivity(error.message);
     })
     .then(function () {
-      // always executed
       if (event.target.tagName === "BUTTON") {
         event.target.className = event.target.className.replace(
           "is-loading",
@@ -112,12 +102,11 @@ export const upgradePackage = ({
   setLastActivity,
 }) => {
   axios
-    .get("http://127.0.0.1:8081/package/upgrade", {
+    .post("http://127.0.0.1:8081/package/upgrade", null, {
       params: {
         packageName: item,
         manager,
       },
-      mode: "no-cors",
     })
     .then(function (response) {
       if (response.data.success) {
@@ -126,12 +115,10 @@ export const upgradePackage = ({
       setPackageName("");
     })
     .catch(function (error) {
-      // handle error
       console.log(error);
       setLastActivity(error.message);
     })
     .then(function () {
-      // always executed
       if (event.target.tagName === "BUTTON") {
         event.target.className = event.target.className.replace(
           "is-loading",
@@ -143,7 +130,7 @@ export const upgradePackage = ({
         element.className = element.className.replace("is-loading", "");
         element.blur();
       }
-      setLastActivity(`upgraded ${item} package`);
+      setLastActivity(`Upgraded ${item} package`);
     });
 };
 
@@ -159,20 +146,16 @@ export const searchPackage = ({
       params: {
         keyword: packageName,
       },
-      mode: "no-cors",
     })
     .then(function (response) {
-      console.log(response.data);
       setSearchResult(response.data.json);
     })
     .catch(function (error) {
-      // handle error
       console.log(error);
       setLastActivity(error.message);
     })
     .then(function () {
-      // always executed
-      setLastActivity(`searched for ${packageName}`);
+      setLastActivity(`Searched for ${packageName}`);
       setIsSearchLoading(false);
     });
 };
